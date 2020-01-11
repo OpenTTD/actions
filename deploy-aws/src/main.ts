@@ -3,9 +3,9 @@ import * as exec from '@actions/exec'
 import * as github from '@actions/github'
 
 async function run(): Promise<void> {
-  const awsAccessKeyId = core.getInput('awsAccessKeyId', {required: true})
-  const awsSecretAccessKey = core.getInput('awsSecretAccessKey', {required: true})
-  const awsRegion = core.getInput('awsRegion', {required: true})
+  const awsAccessKeyId = core.getInput('aws-access-key-id', {required: true})
+  const awsSecretAccessKey = core.getInput('aws-secret-access-key', {required: true})
+  const awsRegion = core.getInput('aws-region', {required: true})
   const name = core.getInput('name', {required: true})
 
   if (!github.context.payload.deployment) {

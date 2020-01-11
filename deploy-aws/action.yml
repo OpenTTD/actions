@@ -2,14 +2,18 @@ name: 'OpenTTD - Deploy to AWS'
 description: 'Deploy a new version to AWS'
 author: 'OpenTTD'
 inputs:
-  aws_access_key_id:
+  aws-access-key-id:
     description: 'The AWS_ACCESS_KEY_ID to use for all operations'
-  aws_secret_access_key:
+    required: true
+  aws-secret-access-key:
     description: 'The AWS_SECRET_ACCESS_KEY to use for all operations'
-  aws_region:
+    required: true
+  aws-region:
     description: 'The AWS_REGION to use for all operations'
+    required: true
   name:
     description: 'The name of the component to deploy'
+    required: true
 runs:
   using: 'node12'
   main: 'dist/index.js'
