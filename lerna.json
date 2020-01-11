@@ -1,7 +1,8 @@
 {
   "packages": [
     "checkout",
-    "checkout-dispatch"
+    "checkout-dispatch",
+    "deploy-aws"
   ],
   "version": "independent"
 }
