@@ -4457,11 +4457,12 @@ function run() {
             ref,
             environment,
             description: `${version} on ${date}`,
-            payload: JSON.stringify({
+            // Type of 'payload' is set to 'string', but it really is an 'object'
+            payload: {
                 tag,
                 version,
                 date
-            }),
+            },
             // Never merge with 'master'; that is just silly.
             auto_merge: false,
             // No matter what other actions say, assume that if we are called, it
