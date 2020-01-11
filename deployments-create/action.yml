@@ -1,0 +1,25 @@
+name: 'OpenTTD - Create Deployments'
+description: 'Easy wrapper around GitHub Deployments API, to create a new deployment'
+author: 'OpenTTD'
+inputs:
+  ref:
+    description: 'Ref that is linked to this deployment; use a SHA-hash'
+    required: true
+  environment:
+    description: 'Environment of this deployment'
+    required: true
+  version:
+    description: 'Version of the Docker image'
+    required: true
+  date:
+    description: 'Date of the Docker image'
+    required: true
+  docker-tag:
+    description: 'Tag of the Docker image as on remote repository'
+    required: true
+  github-token:
+    description: 'GitHub Token; cannot be the GITHUB_TOKEN, as that token cannot trigger another workflow'
+    required: true
+runs:
+  using: 'node12'
+  main: 'index.js'
