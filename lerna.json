@@ -1,5 +1,6 @@
 {
   "packages": [
+    "checkout"
   ],
   "version": "independent"
 }
