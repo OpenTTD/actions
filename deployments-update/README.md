@@ -1,6 +1,6 @@
-# OpenTTD - Update Deployments
+# OpenTTD - Update GitHub Deployments
 
-Update a existing deployment with a new state.
+Update a existing GitHub deployment with a new state.
 
 ## Usage
 
