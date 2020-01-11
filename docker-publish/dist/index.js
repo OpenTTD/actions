@@ -334,10 +334,10 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const core = __importStar(__webpack_require__(793));
 const exec = __importStar(__webpack_require__(73));
-function getOutputFromExec(command) {
+function getOutputFromExec(command, args) {
     return __awaiter(this, void 0, void 0, function* () {
         let output = '';
-        yield exec.exec(command, [], {
+        yield exec.exec(command, args, {
             silent: true,
             listeners: {
                 stdout: (data) => {
@@ -365,7 +365,11 @@ function run() {
         yield exec.exec(`docker login --username ${dockerHubUsername} --password ${dockerHubPassword}`);
         // This pushes all tags of this docker image at once
         yield exec.exec(`docker push ${name}`);
-        const rawDockerTag = yield getOutputFromExec(`docker inspect --format='{{index .RepoDigests 0}}' ${name}:${tag}`);
+        const rawDockerTag = yield getOutputFromExec('docker', [
+            'inspect',
+            "--format='{{index .RepoDigests 0}}'",
+            `${name}:${tag}`
+        ]);
         const dockerTag = rawDockerTag.split('@')[2];
         setOutput('remote-tag', dockerTag);
     });

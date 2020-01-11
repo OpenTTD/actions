@@ -1,9 +1,9 @@
 import * as core from '@actions/core'
 import * as exec from '@actions/exec'
 
-async function getOutputFromExec(command: string): Promise<string> {
+async function getOutputFromExec(command: string, args?: string[]): Promise<string> {
   let output = ''
-  await exec.exec(command, [], {
+  await exec.exec(command, args, {
     silent: true,
     listeners: {
       stdout: (data: Buffer) => {
@@ -33,7 +33,11 @@ async function run(): Promise<void> {
   // This pushes all tags of this docker image at once
   await exec.exec(`docker push ${name}`)
 
-  const rawDockerTag = await getOutputFromExec(`docker inspect --format='{{index .RepoDigests 0}}' ${name}:${tag}`)
+  const rawDockerTag = await getOutputFromExec('docker', [
+    'inspect',
+    "--format='{{index .RepoDigests 0}}'",
+    `${name}:${tag}`
+  ])
   const dockerTag = rawDockerTag.split('@')[2]
   setOutput('remote-tag', dockerTag)
 }
