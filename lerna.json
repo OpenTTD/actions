@@ -1,6 +1,7 @@
 {
   "packages": [
-    "checkout"
+    "checkout",
+    "checkout-dispatch"
   ],
   "version": "independent"
 }
