@@ -349,7 +349,7 @@ function getOutputFromExec(command) {
                 }
             }
         });
-        return output;
+        return output.trim();
     });
 }
 function setOutput(name, value) {

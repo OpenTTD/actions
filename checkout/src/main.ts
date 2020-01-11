@@ -1,6 +1,23 @@
 import * as core from '@actions/core'
 import * as exec from '@actions/exec'
 
+async function getOutputFromExec(command: string): Promise<string> {
+  let output = ''
+  await exec.exec(command, [], {
+    silent: true,
+    listeners: {
+      stdout: (data: Buffer) => {
+        output += data.toString()
+      },
+      stderr: (data: Buffer) => {
+        // Make sure we can see errors as they happen
+        process.stderr.write(data)
+      }
+    }
+  })
+  return output.trim()
+}
+
 async function run(): Promise<void> {
   const withTags = core.getInput('with-tags') || false
   const withSubmodules = core.getInput('with-submodules') || true
@@ -10,14 +27,7 @@ async function run(): Promise<void> {
   }
 
   if (withSubmodules) {
-    let authHeader = ''
-    await exec.exec('git config --local --get http.https://github.com/.extraheader', [], {
-      listeners: {
-        stdout: (data: Buffer) => {
-          authHeader += data.toString()
-        }
-      }
-    })
+    const authHeader = await getOutputFromExec('git config --local --get http.https://github.com/.extraheader')
 
     await exec.exec('git submodule sync --recursive')
     await exec.exec(

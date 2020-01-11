@@ -334,6 +334,24 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const core = __importStar(__webpack_require__(793));
 const exec = __importStar(__webpack_require__(73));
+function getOutputFromExec(command) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let output = '';
+        yield exec.exec(command, [], {
+            silent: true,
+            listeners: {
+                stdout: (data) => {
+                    output += data.toString();
+                },
+                stderr: (data) => {
+                    // Make sure we can see errors as they happen
+                    process.stderr.write(data);
+                }
+            }
+        });
+        return output.trim();
+    });
+}
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         const withTags = core.getInput('with-tags') || false;
@@ -342,14 +360,7 @@ function run() {
             yield exec.exec('git fetch --depth=1 origin +refs/tags/*:refs/tags/*');
         }
         if (withSubmodules) {
-            let authHeader = '';
-            yield exec.exec('git config --local --get http.https://github.com/.extraheader', [], {
-                listeners: {
-                    stdout: (data) => {
-                        authHeader += data.toString();
-                    }
-                }
-            });
+            const authHeader = yield getOutputFromExec('git config --local --get http.https://github.com/.extraheader');
             yield exec.exec('git submodule sync --recursive');
             yield exec.exec(`git -c "http.extraheader=${authHeader}" -c protocol.version=2 submodule update --init --force --recursive --depth=1`);
         }

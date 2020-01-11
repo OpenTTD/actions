@@ -2,6 +2,23 @@ import * as core from '@actions/core'
 import * as exec from '@actions/exec'
 import * as github from '@actions/github'
 
+async function getOutputFromExec(command: string): Promise<string> {
+  let output = ''
+  await exec.exec(command, [], {
+    silent: true,
+    listeners: {
+      stdout: (data: Buffer) => {
+        output += data.toString()
+      },
+      stderr: (data: Buffer) => {
+        // Make sure we can see errors as they happen
+        process.stderr.write(data)
+      }
+    }
+  })
+  return output.trim()
+}
+
 async function run(): Promise<void> {
   if (github.context.eventName !== 'repository_dispatch') {
     return
@@ -10,23 +27,8 @@ async function run(): Promise<void> {
     return
   }
 
-  let revList = ''
-  await exec.exec('git rev-list --tags --max-count=1', [], {
-    listeners: {
-      stdout: (data: Buffer) => {
-        revList += data.toString()
-      }
-    }
-  })
-
-  let describe = ''
-  await exec.exec(`git describe ${revList} --tags`, [], {
-    listeners: {
-      stdout: (data: Buffer) => {
-        describe += data.toString()
-      }
-    }
-  })
+  const revList = await getOutputFromExec('git rev-list --tags --max-count=1')
+  const describe = await getOutputFromExec(`git describe ${revList} --tags`)
 
   const ref = `refs/tags/${describe}`
   await exec.exec(`git checkout ${ref}`)

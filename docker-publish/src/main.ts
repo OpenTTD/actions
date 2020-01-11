@@ -15,7 +15,7 @@ async function getOutputFromExec(command: string): Promise<string> {
       }
     }
   })
-  return output
+  return output.trim()
 }
 
 function setOutput(name: string, value: string): void {

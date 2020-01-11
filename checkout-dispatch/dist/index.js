@@ -4682,6 +4682,24 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const core = __importStar(__webpack_require__(793));
 const exec = __importStar(__webpack_require__(73));
 const github = __importStar(__webpack_require__(396));
+function getOutputFromExec(command) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let output = '';
+        yield exec.exec(command, [], {
+            silent: true,
+            listeners: {
+                stdout: (data) => {
+                    output += data.toString();
+                },
+                stderr: (data) => {
+                    // Make sure we can see errors as they happen
+                    process.stderr.write(data);
+                }
+            }
+        });
+        return output.trim();
+    });
+}
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         if (github.context.eventName !== 'repository_dispatch') {
@@ -4690,22 +4708,8 @@ function run() {
         if (github.context.action !== 'publish_latest_tag') {
             return;
         }
-        let revList = '';
-        yield exec.exec('git rev-list --tags --max-count=1', [], {
-            listeners: {
-                stdout: (data) => {
-                    revList += data.toString();
-                }
-            }
-        });
-        let describe = '';
-        yield exec.exec(`git describe ${revList} --tags`, [], {
-            listeners: {
-                stdout: (data) => {
-                    describe += data.toString();
-                }
-            }
-        });
+        const revList = yield getOutputFromExec('git rev-list --tags --max-count=1');
+        const describe = yield getOutputFromExec(`git describe ${revList} --tags`);
         const ref = `refs/tags/${describe}`;
         yield exec.exec(`git checkout ${ref}`);
         core.info(`Switched branch to ${ref}`);

@@ -15,7 +15,7 @@ async function getOutputFromExec(command: string): Promise<string> {
       }
     }
   })
-  return output
+  return output.trim()
 }
 
 function setOutput(name: string, value: string): void {
@@ -40,7 +40,6 @@ async function run(): Promise<void> {
   setOutput('sha', sha)
 
   const branchName = await getOutputFromExec('git rev-parse --abbrev-ref HEAD')
-  core.info(`AAA${branchName}BBB`)
   if (branchName === 'master') {
     setOutput('environment', 'staging')
     setOutput('tag', 'development')
