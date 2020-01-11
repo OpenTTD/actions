@@ -2,8 +2,8 @@ import * as core from '@actions/core'
 import * as exec from '@actions/exec'
 
 async function run(): Promise<void> {
-  const withTags = core.getInput('with_tags') || false
-  const withSubmodules = core.getInput('withSubmodules') || true
+  const withTags = core.getInput('with-tags') || false
+  const withSubmodules = core.getInput('with-submodules') || true
 
   if (withTags) {
     await exec.exec('git fetch --depth=1 origin +refs/tags/*:refs/tags/*')

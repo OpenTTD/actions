@@ -2,10 +2,10 @@ name: 'OpenTTD - Checkout'
 description: 'Checkout action to get tags and submodules'
 author: 'OpenTTD'
 inputs:
-  with_tags:
+  with-tags:
     description: 'should tags be checked out'
     default: false
-  with_submodules:
+  with-submodules:
     description: 'should submodules be checked out'
     default: true
 runs:
