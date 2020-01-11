@@ -383,10 +383,10 @@ function run() {
             setOutput('tags', `${versionMajor} ${versionMajorMinor}`);
         }
         if (dockerHubUsername) {
-            setOutput('dry-run', 'true');
+            setOutput('dry-run', 'false');
         }
         else {
-            setOutput('dry-run', 'false');
+            setOutput('dry-run', 'true');
         }
     });
 }
