@@ -25,7 +25,8 @@ async function run(): Promise<void> {
     ref,
     environment,
     description: `${version} on ${date}`,
-    payload: JSON.stringify({
+    // Type of 'payload' is set to 'string', but it really is an 'object'
+    payload: <string>(<unknown>{
       tag,
       version,
       date
