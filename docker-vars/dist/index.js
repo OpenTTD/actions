@@ -4682,10 +4682,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const core = __importStar(__webpack_require__(793));
 const exec = __importStar(__webpack_require__(73));
 const github = __importStar(__webpack_require__(396));
-function getOutputFromExec(command) {
+function getOutputFromExec(command, args) {
     return __awaiter(this, void 0, void 0, function* () {
         let output = '';
-        yield exec.exec(command, [], {
+        yield exec.exec(command, args, {
             silent: true,
             listeners: {
                 stdout: (data) => {
