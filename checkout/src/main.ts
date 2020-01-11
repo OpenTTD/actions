@@ -1,9 +1,9 @@
 import * as core from '@actions/core'
 import * as exec from '@actions/exec'
 
-async function getOutputFromExec(command: string): Promise<string> {
+async function getOutputFromExec(command: string, args?: string[]): Promise<string> {
   let output = ''
-  await exec.exec(command, [], {
+  await exec.exec(command, args, {
     silent: true,
     listeners: {
       stdout: (data: Buffer) => {
