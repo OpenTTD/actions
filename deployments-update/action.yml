@@ -1,0 +1,17 @@
+name: 'OpenTTD - Update Deployments'
+description: 'Easy wrapper around GitHub Deployments API, to update the state'
+author: 'OpenTTD'
+inputs:
+  state:
+    description: 'New state of the deployment; one of the following: in_progress, success, failure'
+    required: true
+  url:
+    description: 'URL where deployment will be available [state=success]'
+  description:
+    description: 'Description of the state change'
+  github-token:
+    description: 'GitHub Token; cannot be the GITHUB_TOKEN, as it has no access to the deployment'
+    required: true
+runs:
+  using: 'node12'
+  main: 'index.js'

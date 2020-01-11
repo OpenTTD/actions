@@ -2,7 +2,9 @@
   "packages": [
     "checkout",
     "checkout-dispatch",
-    "deploy-aws"
+    "deploy-aws",
+    "deployments-create",
+    "deployments-update"
   ],
   "version": "independent"
 }

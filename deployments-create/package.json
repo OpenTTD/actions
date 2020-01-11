@@ -1,0 +1,8 @@
+{
+  "name": "@openttd-actions/deployments-create",
+  "main": "lib/main.js",
+  "dependencies": {
+    "@actions/core": "^1.2.1",
+    "@actions/github": "^2.0.1"
+  }
+}
