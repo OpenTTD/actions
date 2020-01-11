@@ -55,9 +55,9 @@ async function run(): Promise<void> {
   }
 
   if (dockerHubUsername) {
-    setOutput('dry-run', 'true')
-  } else {
     setOutput('dry-run', 'false')
+  } else {
+    setOutput('dry-run', 'true')
   }
 }
 
