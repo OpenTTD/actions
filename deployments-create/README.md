@@ -1,6 +1,6 @@
-# OpenTTD - Create Deployments
+# OpenTTD - Create GitHub Deployments
 
-Creates a new deployment based on the information supplied.
+Creates a new GitHub deployment based on the information supplied.
 
 This is the start of a new deployment.
 GitHub will emit a 'deployment' event for another workflow to pickup.
@@ -27,7 +27,7 @@ Although not required, it is highly advised to use those GitHub Actions in combi
     date: ${{ steps.vars.outputs.date }}
 
     # (required) tag of the Docker image as on remote repository
-    docker-tag: ${{ steps.publish.outputs.docker_tag }}
+    docker-tag: ${{ steps.publish.outputs.remote-tag }}
 
     # (required) GitHub Token; cannot be the GITHUB_TOKEN, as that token cannot trigger another workflow
     github-token: ${{ secrets.DEPLOYMENT_TOKEN }}
