@@ -1,0 +1,22 @@
+name: 'OpenTTD - Publish Docker'
+description: 'Easy wrapper around Docker; needs to be used in combination with docker-vars and docker-build'
+author: 'OpenTTD'
+inputs:
+  docker-hub-username:
+    description: 'Username to use for hub.docker.com'
+    required: true
+  docker-hub-password:
+    description: 'Password to use for hub.docker.com'
+    required: true
+  name:
+    description: 'Name of the Docker repository to use'
+    required: true
+  tag:
+    description: 'Main tag of the Docker image'
+    required: true
+outputs:
+  remote-tag:
+    description: 'Tag of the Docker image as on remote repository'
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
