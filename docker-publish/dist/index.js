@@ -370,7 +370,7 @@ function run() {
             "--format='{{index .RepoDigests 0}}'",
             `${name}:${tag}`
         ]);
-        const dockerTag = rawDockerTag.split('@')[2];
+        const dockerTag = rawDockerTag.split('@')[1];
         setOutput('remote-tag', dockerTag);
     });
 }
