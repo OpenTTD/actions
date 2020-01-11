@@ -11,7 +11,7 @@
     "format-check": "lerna exec prettier -- --check src/*.ts",
     "ncu": "lerna exec ncu -- -u",
     "lint": "lerna exec eslint -- src/*.ts",
-    "pack": "lerna exec ncc -- build -m"
+    "pack": "lerna exec ncc -- build"
   },
   "devDependencies": {
     "@types/node": "^13.1.6",
