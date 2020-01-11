@@ -349,7 +349,7 @@ function getOutputFromExec(command) {
                 }
             }
         });
-        return output;
+        return output.trim();
     });
 }
 function setOutput(name, value) {
@@ -369,7 +369,6 @@ function run() {
         const sha = yield getOutputFromExec('git rev-parse --verify HEAD');
         setOutput('sha', sha);
         const branchName = yield getOutputFromExec('git rev-parse --abbrev-ref HEAD');
-        core.info(`AAA${branchName}BBB`);
         if (branchName === 'master') {
             setOutput('environment', 'staging');
             setOutput('tag', 'development');
