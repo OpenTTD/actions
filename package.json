@@ -25,8 +25,5 @@
     "lerna": "^3.20.2",
     "prettier": "^1.19.1",
     "typescript": "^3.7.4"
-  },
-  "dependencies": {
-    "@zeit/ncc": "^0.21.0"
   }
 }
