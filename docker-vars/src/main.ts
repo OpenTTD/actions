@@ -1,5 +1,6 @@
 import * as core from '@actions/core'
 import * as exec from '@actions/exec'
+import * as github from '@actions/github'
 
 async function getOutputFromExec(command: string): Promise<string> {
   let output = ''
@@ -39,8 +40,26 @@ async function run(): Promise<void> {
   const sha = await getOutputFromExec('git rev-parse --verify HEAD')
   setOutput('sha', sha)
 
-  const branchName = await getOutputFromExec('git rev-parse --abbrev-ref HEAD')
-  if (branchName === 'master') {
+  // Figure out if we are building for staging; this can either be because we
+  // are a remote-trigger with 'publish_master' or because our 'ref' is set to
+  // 'refs/heads/master' (instead of a tag). This is still a bit thin, but it
+  // is all we got.
+  let isStaging
+  if (github.context.eventName === 'repository_dispatch') {
+    if (github.context.action === 'publish_master') {
+      isStaging = true
+    } else {
+      isStaging = false
+    }
+  } else {
+    if (github.context.ref === 'refs/heads/master') {
+      isStaging = true
+    } else {
+      isStaging = false
+    }
+  }
+
+  if (isStaging) {
     setOutput('environment', 'staging')
     setOutput('tag', 'development')
     setOutput('tags', 'dev')
