@@ -1,0 +1,32 @@
+{
+  "name": "root",
+  "private": true,
+  "scripts": {
+    "all": "npm run bootstrap && npm run format && npm run check-all && npm run build && npm run pack",
+    "bootstrap": "lerna bootstrap",
+    "build": "lerna exec tsc",
+    "check-all": "concurrently \"npm:format-check\" \"npm:lint\" \"npm:build -- -- --noEmit\"",
+    "clean": "lerna exec rm -- -rf node_modules package-lock.json dist lib",
+    "format": "lerna exec prettier -- --write src/*.ts",
+    "format-check": "lerna exec prettier -- --check src/*.ts",
+    "ncu": "lerna exec ncu -- -u",
+    "lint": "lerna exec eslint -- src/*.ts",
+    "pack": "lerna exec ncc -- build -m"
+  },
+  "devDependencies": {
+    "@types/node": "^13.1.6",
+    "@types/signale": "^1.2.1",
+    "@typescript-eslint/parser": "^2.15.0",
+    "@zeit/ncc": "^0.21.0",
+    "concurrently": "^5.0.2",
+    "eslint": "^6.8.0",
+    "eslint-plugin-github": "^3.4.0",
+    "flow-bin": "^0.115.0",
+    "lerna": "^3.20.2",
+    "prettier": "^1.19.1",
+    "typescript": "^3.7.4"
+  },
+  "dependencies": {
+    "@zeit/ncc": "^0.21.0"
+  }
+}
