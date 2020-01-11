@@ -1,0 +1,8 @@
+{
+  "name": "@openttd-actions/docker-vars",
+  "main": "lib/main.js",
+  "dependencies": {
+    "@actions/core": "^1.2.1",
+    "@actions/exec": "^1.0.3"
+  }
+}

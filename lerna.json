@@ -4,7 +4,10 @@
     "checkout-dispatch",
     "deploy-aws",
     "deployments-create",
-    "deployments-update"
+    "deployments-update",
+    "docker-build",
+    "docker-publish",
+    "docker-vars"
   ],
   "version": "independent"
 }
