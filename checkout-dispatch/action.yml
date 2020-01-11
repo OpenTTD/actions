@@ -3,4 +3,4 @@ description: 'Change git branch if dispatch event requested this'
 author: 'OpenTTD'
 runs:
   using: 'node12'
-  main: 'index.js'
+  main: 'dist/index.js'
