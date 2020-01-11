@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "all": "npm run bootstrap && npm run format && npm run check-all && npm run build && npm run pack",
-    "bootstrap": "lerna bootstrap",
+    "bootstrap": "lerna bootstrap && lerna exec removeNPMAbsolutePaths .",
     "build": "lerna exec tsc",
     "check-all": "concurrently \"npm:format-check\" \"npm:lint\" \"npm:build -- -- --noEmit\"",
     "clean": "lerna exec rm -- -rf node_modules package-lock.json dist lib",
@@ -24,6 +24,7 @@
     "flow-bin": "^0.115.0",
     "lerna": "^3.20.2",
     "prettier": "^1.19.1",
+    "removeNPMAbsolutePaths": "^2.0.0",
     "typescript": "^3.7.4"
   }
 }
