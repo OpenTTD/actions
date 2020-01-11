@@ -1,0 +1,13 @@
+name: 'OpenTTD - Checkout'
+description: 'Checkout action to get tags and submodules'
+author: 'OpenTTD'
+inputs:
+  with_tags:
+    description: 'should tags be checked out'
+    default: false
+  with_submodules:
+    description: 'should submodules be checked out'
+    default: true
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
