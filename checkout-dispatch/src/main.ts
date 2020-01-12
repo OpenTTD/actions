@@ -27,9 +27,14 @@ async function run(): Promise<void> {
     return
   }
 
+  // Make sure we fetch all the tags; otherwise we cannot detect the latest
+  await exec.exec('git fetch --depth=1 origin +refs/tags/*:refs/tags/*')
+
+  // Find the latest tag
   const revList = await getOutputFromExec('git rev-list --tags --max-count=1')
   const describe = await getOutputFromExec(`git describe ${revList} --tags`)
 
+  // Switch the code to the latest tag
   const ref = `refs/tags/${describe}`
   await exec.exec(`git checkout ${ref}`)
   core.info(`Switched branch to ${ref}`)

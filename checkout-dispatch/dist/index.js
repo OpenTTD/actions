@@ -4708,8 +4708,12 @@ function run() {
         if (github.context.payload.action !== 'publish_latest_tag') {
             return;
         }
+        // Make sure we fetch all the tags; otherwise we cannot detect the latest
+        yield exec.exec('git fetch --depth=1 origin +refs/tags/*:refs/tags/*');
+        // Find the latest tag
         const revList = yield getOutputFromExec('git rev-list --tags --max-count=1');
         const describe = yield getOutputFromExec(`git describe ${revList} --tags`);
+        // Switch the code to the latest tag
         const ref = `refs/tags/${describe}`;
         yield exec.exec(`git checkout ${ref}`);
         core.info(`Switched branch to ${ref}`);
