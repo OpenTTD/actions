@@ -354,12 +354,12 @@ function getOutputFromExec(command, args) {
 }
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
-        const withTags = core.getInput('with-tags');
-        const withSubmodules = core.getInput('with-submodules');
-        if (withTags === 'true') {
+        const withTags = (core.getInput('with-tags') || 'false').toUpperCase() === 'TRUE';
+        const withSubmodules = (core.getInput('with-submodules') || 'false').toUpperCase() === 'TRUE';
+        if (withTags) {
             yield exec.exec('git fetch --depth=1 origin +refs/tags/*:refs/tags/*');
         }
-        if (withSubmodules === 'true') {
+        if (withSubmodules) {
             const authHeader = yield getOutputFromExec('git config --local --get http.https://github.com/.extraheader');
             yield exec.exec('git submodule sync --recursive');
             yield exec.exec(`git -c "http.extraheader=${authHeader}" -c protocol.version=2 submodule update --init --force --recursive --depth=1`);
