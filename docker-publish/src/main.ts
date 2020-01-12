@@ -35,7 +35,7 @@ async function run(): Promise<void> {
 
   const rawDockerTag = await getOutputFromExec('docker', [
     'inspect',
-    "--format='{{index .RepoDigests 0}}'",
+    '--format={{index .RepoDigests 0}}',
     `${name}:${tag}`
   ])
   const dockerTag = rawDockerTag.split('@')[1]
