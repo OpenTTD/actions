@@ -4722,7 +4722,7 @@ function run() {
         // is all we got.
         let isStaging;
         if (github.context.eventName === 'repository_dispatch') {
-            if (github.context.action === 'publish_master') {
+            if (github.context.payload.action === 'publish_master') {
                 isStaging = true;
             }
             else {

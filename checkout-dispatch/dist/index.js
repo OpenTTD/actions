@@ -4705,7 +4705,7 @@ function run() {
         if (github.context.eventName !== 'repository_dispatch') {
             return;
         }
-        if (github.context.action !== 'publish_latest_tag') {
+        if (github.context.payload.action !== 'publish_latest_tag') {
             return;
         }
         const revList = yield getOutputFromExec('git rev-list --tags --max-count=1');
