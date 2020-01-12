@@ -19,14 +19,14 @@ async function getOutputFromExec(command: string, args?: string[]): Promise<stri
 }
 
 async function run(): Promise<void> {
-  const withTags = core.getInput('with-tags') || false
-  const withSubmodules = core.getInput('with-submodules') || true
+  const withTags = core.getInput('with-tags')
+  const withSubmodules = core.getInput('with-submodules')
 
-  if (withTags) {
+  if (withTags === 'true') {
     await exec.exec('git fetch --depth=1 origin +refs/tags/*:refs/tags/*')
   }
 
-  if (withSubmodules) {
+  if (withSubmodules === 'true') {
     const authHeader = await getOutputFromExec('git config --local --get http.https://github.com/.extraheader')
 
     await exec.exec('git submodule sync --recursive')
