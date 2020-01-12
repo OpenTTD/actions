@@ -23,7 +23,7 @@ async function run(): Promise<void> {
   if (github.context.eventName !== 'repository_dispatch') {
     return
   }
-  if (github.context.action !== 'publish_latest_tag') {
+  if (github.context.payload.action !== 'publish_latest_tag') {
     return
   }
 
