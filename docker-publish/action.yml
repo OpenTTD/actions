@@ -2,12 +2,12 @@ name: 'OpenTTD - Publish Docker'
 description: 'Easy wrapper around Docker; needs to be used in combination with docker-vars and docker-build'
 author: 'OpenTTD'
 inputs:
-  docker-hub-username:
-    description: 'Username to use for hub.docker.com'
-    required: true
-  docker-hub-password:
-    description: 'Password to use for hub.docker.com'
-    required: true
+  registry:
+    description: 'Registry to use for Docker images (default=Docker Hub)'
+  registry-username:
+    description: 'Username to use for registry'
+  registry-password:
+    description: 'Password to use for registry'
   name:
     description: 'Name of the Docker repository to use'
     required: true

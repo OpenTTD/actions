@@ -341,9 +341,10 @@ function run() {
         const tags = core.getInput('tags', { required: true });
         const version = core.getInput('version', { required: true });
         const date = core.getInput('date', { required: true });
-        yield exec.exec(`docker build -t ${name}:${tag} --build-arg BUILD_DATE=${date} --build-arg BUILD_VERSION=${version} .`);
+        const registry = core.getInput('registry') || 'docker.io';
+        yield exec.exec(`docker build -t ${registry}/${name}:${tag} --build-arg BUILD_DATE=${date} --build-arg BUILD_VERSION=${version} .`);
         for (const alias of tags.split(' ')) {
-            yield exec.exec(`docker tag ${name}:${tag} ${name}:${alias}`);
+            yield exec.exec(`docker tag ${registry}/${name}:${tag} ${registry}/${name}:${alias}`);
         }
     });
 }

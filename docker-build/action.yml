@@ -2,6 +2,8 @@ name: 'OpenTTD - Build Docker'
 description: 'Easy wrapper around Docker; needs to be used in combination with docker-vars and docker-publish'
 author: 'OpenTTD'
 inputs:
+  registry:
+    description: 'Registry to use for Docker images (default=Docker Hub)'
   name:
     description: 'Name of the Docker repository to use'
     required: true

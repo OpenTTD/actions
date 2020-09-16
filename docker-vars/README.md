@@ -11,8 +11,8 @@ This action takes care of that.
     # (required) Repository on hub.docker.com to use
     repository: ${{ github.repository }}
 
-    # (required) Username to use for hub.docker.com
-    docker-hub-username: ${{ secrets.DOCKER_USERNAME }}
+    # (optional) Username to use for registry (if unset, this will be a dry-run)
+    registry-username: ${{ secrets.REGISTRY_USERNAME }}
 ```
 
 ## Output
