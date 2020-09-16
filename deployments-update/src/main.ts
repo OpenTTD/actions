@@ -28,7 +28,7 @@ async function run(): Promise<void> {
   const repo = github.context.payload.repository.name
   const deploymentId = github.context.payload.deployment.id
 
-  const octokit = new github.GitHub(githubToken, {
+  const octokit = github.getOctokit(githubToken, {
     previews: ['flash', 'ant-man']
   })
   await octokit.repos.createDeploymentStatus({
