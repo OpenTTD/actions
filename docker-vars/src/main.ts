@@ -26,7 +26,7 @@ function setOutput(name: string, value: string): void {
 
 async function run(): Promise<void> {
   const repository = core.getInput('repository', {required: true})
-  const dockerHubUsername = core.getInput('docker-hub-username')
+  const registryUsername = core.getInput('registry-username')
 
   const repositoryLowerCase = repository.toLowerCase()
   setOutput('name', repositoryLowerCase)
@@ -73,7 +73,7 @@ async function run(): Promise<void> {
     setOutput('tags', `${versionMajor} ${versionMajorMinor}`)
   }
 
-  if (dockerHubUsername) {
+  if (registryUsername) {
     setOutput('dry-run', 'false')
   } else {
     setOutput('dry-run', 'true')

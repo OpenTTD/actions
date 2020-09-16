@@ -7,13 +7,14 @@ async function run(): Promise<void> {
   const tags = core.getInput('tags', {required: true})
   const version = core.getInput('version', {required: true})
   const date = core.getInput('date', {required: true})
+  const registry = core.getInput('registry') || 'docker.io'
 
   await exec.exec(
-    `docker build -t ${name}:${tag} --build-arg BUILD_DATE=${date} --build-arg BUILD_VERSION=${version} .`
+    `docker build -t ${registry}/${name}:${tag} --build-arg BUILD_DATE=${date} --build-arg BUILD_VERSION=${version} .`
   )
 
   for (const alias of tags.split(' ')) {
-    await exec.exec(`docker tag ${name}:${tag} ${name}:${alias}`)
+    await exec.exec(`docker tag ${registry}/${name}:${tag} ${registry}/${name}:${alias}`)
   }
 }
 

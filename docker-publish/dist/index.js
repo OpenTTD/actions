@@ -358,17 +358,18 @@ function setOutput(name, value) {
 }
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
-        const dockerHubUsername = core.getInput('docker-hub-username', { required: true });
-        const dockerHubPassword = core.getInput('docker-hub-password', { required: true });
+        const registryUsername = core.getInput('registry-username', { required: true });
+        const registryPassword = core.getInput('registry-password', { required: true });
         const name = core.getInput('name', { required: true });
         const tag = core.getInput('tag', { required: true });
-        yield exec.exec(`docker login --username ${dockerHubUsername} --password ${dockerHubPassword}`);
+        const registry = core.getInput('registry') || 'docker.io';
+        yield exec.exec(`docker login ${registry} --username ${registryUsername} --password ${registryPassword}`);
         // This pushes all tags of this docker image at once
-        yield exec.exec(`docker push ${name}`);
+        yield exec.exec(`docker push ${registry}/${name}`);
         const rawDockerTag = yield getOutputFromExec('docker', [
             'inspect',
             '--format={{index .RepoDigests 0}}',
-            `${name}:${tag}`
+            `${registry}/${name}:${tag}`
         ]);
         const dockerTag = rawDockerTag.split('@')[1];
         setOutput('remote-tag', dockerTag);

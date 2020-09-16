@@ -5,8 +5,8 @@ inputs:
   repository:
     description: 'Repository on hub.docker.com to use'
     default: ${{ github.repository }}
-  docker-hub-username:
-    description: 'Username to use for hub.docker.com (if unset, this will be a dry-run)'
+  registry-username:
+    description: 'Username to use for registry (if unset, this will be a dry-run)'
 outputs:
   name:
     description: 'Name of the Docker repository to use'

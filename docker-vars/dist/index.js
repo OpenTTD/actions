@@ -4099,7 +4099,7 @@ function setOutput(name, value) {
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         const repository = core.getInput('repository', { required: true });
-        const dockerHubUsername = core.getInput('docker-hub-username');
+        const registryUsername = core.getInput('registry-username');
         const repositoryLowerCase = repository.toLowerCase();
         setOutput('name', repositoryLowerCase);
         const version = yield getOutputFromExec('git describe --tags');
@@ -4142,7 +4142,7 @@ function run() {
             setOutput('tag', version);
             setOutput('tags', `${versionMajor} ${versionMajorMinor}`);
         }
-        if (dockerHubUsername) {
+        if (registryUsername) {
             setOutput('dry-run', 'false');
         }
         else {
