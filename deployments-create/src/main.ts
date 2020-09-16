@@ -16,7 +16,7 @@ async function run(): Promise<void> {
   const owner = github.context.payload.repository.owner.login
   const repo = github.context.payload.repository.name
 
-  const octokit = new github.GitHub(githubToken, {
+  const octokit = github.getOctokit(githubToken, {
     previews: ['flash', 'ant-man']
   })
   await octokit.repos.createDeployment({
