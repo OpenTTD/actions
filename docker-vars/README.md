@@ -8,8 +8,11 @@ This action takes care of that.
 ```yaml
 - uses: openttd/actions/docker-vars@v1
   with:
-    # (required) Repository on hub.docker.com to use
+    # (required) Repository on Container Registry to use
     repository: ${{ github.repository }}
+
+    # (optional) Name of the branch used for development
+    branch-name: master
 
     # (optional) Username to use for registry (if unset, this will be a dry-run)
     registry-username: ${{ secrets.REGISTRY_USERNAME }}
