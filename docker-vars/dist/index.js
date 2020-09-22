@@ -4080,6 +4080,7 @@ function setOutput(name, value) {
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         const repository = core.getInput('repository', { required: true });
+        const branchName = core.getInput('branch-name') || 'master';
         const registryUsername = core.getInput('registry-username');
         const repositoryLowerCase = repository.toLowerCase();
         setOutput('name', repositoryLowerCase);
@@ -4103,7 +4104,7 @@ function run() {
             }
         }
         else {
-            if (github.context.ref === 'refs/heads/master') {
+            if (github.context.ref === `refs/heads/${branchName}`) {
                 isStaging = true;
             }
             else {

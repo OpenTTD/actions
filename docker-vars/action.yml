@@ -3,8 +3,10 @@ description: 'Defines variables for docker-build and docker-publish'
 author: 'OpenTTD'
 inputs:
   repository:
-    description: 'Repository on hub.docker.com to use'
+    description: 'Repository on Container Registry to use'
     default: ${{ github.repository }}
+  branch-name:
+    description: 'Name of the branch used for development (default=master)'
   registry-username:
     description: 'Username to use for registry (if unset, this will be a dry-run)'
 outputs:

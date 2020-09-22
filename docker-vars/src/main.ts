@@ -26,6 +26,7 @@ function setOutput(name: string, value: string): void {
 
 async function run(): Promise<void> {
   const repository = core.getInput('repository', {required: true})
+  const branchName = core.getInput('branch-name') || 'master'
   const registryUsername = core.getInput('registry-username')
 
   const repositoryLowerCase = repository.toLowerCase()
@@ -52,7 +53,7 @@ async function run(): Promise<void> {
       isStaging = false
     }
   } else {
-    if (github.context.ref === 'refs/heads/master') {
+    if (github.context.ref === `refs/heads/${branchName}`) {
       isStaging = true
     } else {
       isStaging = false
