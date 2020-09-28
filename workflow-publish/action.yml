@@ -1,0 +1,82 @@
+name: 'OpenTTD - Workflow Publish'
+description: 'Publishes an image to the registry and triggers a deployment'
+author: 'OpenTTD'
+inputs:
+  registry-username:
+    description: 'Username to use for registry'
+    required: true
+  registry-password:
+    description: 'Password to use for registry'
+    required: true
+  deployment-token:
+    description: 'GitHub PAT to use to start deployments'
+    required: true
+  with-submodules:
+    description: 'whether this repository has submodules'
+    default: false
+  has-staging:
+    description: 'whether this repository has a staging environment'
+    default: true
+  branch-name:
+    description: 'Name of the branch used for development (default=master)'
+    default: master
+  image-name:
+    description: 'Image name to use for registry'
+    default: ${{ github.repository }}
+runs:
+  using: 'composite'
+  steps:
+  - name: Checkout
+    uses: actions/checkout@v2
+    with:
+      fetch-depth: 0
+
+  - if: github.event_name == 'repository_dispatch'
+    name: Repository dispatch
+    uses: openttd/actions/checkout-dispatch@v2
+
+  - name: Checkout tags and submodules
+    uses: openttd/actions/checkout@v2
+    with:
+      with-tags: true
+      with-submodules: ${{ inputs.with-submodules }}
+
+  - name: Set variables
+    id: vars
+    uses: openttd/actions/docker-vars@v2
+    with:
+      repository: ${{ inputs.image-name }}
+      branch-name: ${{ inputs.branch-name }}
+      registry-username: ${{ inputs.registry-username }}
+
+  - name: Build
+    uses: openttd/actions/docker-build@v2
+    with:
+      name: ${{ steps.vars.outputs.name }}
+      tag: ${{ steps.vars.outputs.tag }}
+      tags: ${{ steps.vars.outputs.tags }}
+      version: ${{ steps.vars.outputs.version }}
+      date: ${{ steps.vars.outputs.date }}
+      registry: ghcr.io
+
+  - if: steps.vars.outputs.dry-run == 'false'
+    name: Publish
+    id: publish
+    uses: openttd/actions/docker-publish@v2
+    with:
+      registry-username: ${{ inputs.registry-username }}
+      registry-password: ${{ inputs.registry-password }}
+      registry: ghcr.io
+      name: ${{ steps.vars.outputs.name }}
+      tag: ${{ steps.vars.outputs.tag }}
+
+  - if: steps.vars.outputs.dry-run == 'false' && (inputs.has-staging || steps.vars.outputs.environment == 'production')
+    name: Trigger deployment
+    uses: openttd/actions/deployments-create@v2
+    with:
+      ref: ${{ steps.vars.outputs.sha }}
+      environment: ${{ steps.vars.outputs.environment }}
+      version: ${{ steps.vars.outputs.version }}
+      date: ${{ steps.vars.outputs.date }}
+      docker-tag: ${{ steps.publish.outputs.remote-tag }}
+      github-token: ${{ inputs.deployment-token }}

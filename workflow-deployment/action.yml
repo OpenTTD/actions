@@ -1,0 +1,54 @@
+name: 'OpenTTD - Workflow Deployment'
+description: 'Deploys a new image on AWS'
+author: 'OpenTTD'
+inputs:
+  aws-stack-name:
+    description: 'Name of the AWS CloudFormation stack'
+    required: true
+  deployment-token:
+    description: 'GitHub PAT to use to update deployment status'
+    required: true
+  aws-access-key-id:
+    description: 'The AWS_ACCESS_KEY_ID to use for all operations'
+    required: true
+  aws-secret-access-key:
+    description: 'The AWS_SECRET_ACCESS_KEY to use for all operations'
+    required: true
+  aws-region:
+    description: 'The AWS_REGION to use for all operations'
+    required: true
+  staging-url:
+    description: 'Location where staging can be found'
+runs:
+  using: 'composite'
+  steps:
+  - name: Deployment in progress
+    uses: openttd/actions/deployments-update@v2
+    with:
+      github-token: ${{ inputs.deployment-token }}
+      state: in_progress
+      description: "Deployment of ${{ github.event.deployment.payload.version }} to ${{ github.event.deployment.environment }} started"
+
+  - name: Deploy on AWS
+    uses: openttd/actions/deploy-aws@v2
+    with:
+      aws-access-key-id: ${{ inputs.aws-access-key-id }}
+      aws-secret-access-key: ${{ inputs.aws-secret-access-key }}
+      aws-region: ${{ inputs.aws-region }}
+      name: ${{ inputs.aws-stack-name }}
+
+  - if: success()
+    name: Deployment successful
+    uses: openttd/actions/deployments-update@v2
+    with:
+      github-token: ${{ inputs.deployment-token }}
+      state: success
+      description: "Successfully deployed ${{ github.event.deployment.payload.version }} on ${{ github.event.deployment.environment }}"
+      url: ${{ inputs.staging-url }}
+
+  - if: failure() || cancelled()
+    name: Deployment failed
+    uses: openttd/actions/deployments-update@v2
+    with:
+      github-token: ${{ inputs.deployment-token }}
+      state: failure
