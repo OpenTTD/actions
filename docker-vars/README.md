@@ -6,7 +6,7 @@ This action takes care of that.
 ## Usage
 
 ```yaml
-- uses: openttd/actions/docker-vars@v1
+- uses: openttd/actions/docker-vars@v2
   with:
     # (required) Repository on Container Registry to use
     repository: ${{ github.repository }}

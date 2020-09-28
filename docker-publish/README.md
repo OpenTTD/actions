@@ -5,7 +5,7 @@ Publish a Docker image to Docker Hub.
 ## Usage
 
 ```yaml
-- uses: openttd/actions/docker-publish@v1
+- uses: openttd/actions/docker-publish@v2
   with:
     # (required) Username to use for registry
     registry-username: ${{ secrets.REGISTRY_USERNAME }}
