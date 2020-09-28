@@ -15,6 +15,7 @@ As GitHub Actions doesn't allow to include workflows of other projects, this is 
 - [docker-build](docker-build/): Helper to build Docker images.
 - [docker-publish](docker-publish/): Helper to publish Docker images.
 - [docker-vars](docker-vars/): Deduce variables needed for other actions in this repository.
+- [workflow-commit-checker](workflow-commit-checkker/): Composite action to check common mistakes in pull requests.
 - [workflow-deployment](workflow-deployment/): Composite action to deploy a new image to AWS.
 - [workflow-publish](workflow-publish/): Composite action to publish images to the registry.
 
