@@ -2,7 +2,7 @@
   "name": "@openttd-actions/deployments-update",
   "main": "lib/main.js",
   "dependencies": {
-    "@actions/core": "^1.2.5",
+    "@actions/core": "^1.2.6",
     "@actions/github": "^4.0.0"
   }
 }
