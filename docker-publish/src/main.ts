@@ -32,7 +32,7 @@ async function run(): Promise<void> {
 
   await exec.exec(`docker login ${registry} --username ${registryUsername} --password ${registryPassword}`)
   // This pushes all tags of this docker image at once
-  await exec.exec(`docker push ${registry}/${name}`)
+  await exec.exec(`docker push --all-tags ${registry}/${name}`)
 
   const rawDockerTag = await getOutputFromExec('docker', [
     'inspect',

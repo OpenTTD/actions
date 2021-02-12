@@ -390,7 +390,7 @@ function run() {
         const registry = core.getInput('registry') || 'docker.io';
         yield exec.exec(`docker login ${registry} --username ${registryUsername} --password ${registryPassword}`);
         // This pushes all tags of this docker image at once
-        yield exec.exec(`docker push ${registry}/${name}`);
+        yield exec.exec(`docker push --all-tags ${registry}/${name}`);
         const rawDockerTag = yield getOutputFromExec('docker', [
             'inspect',
             '--format={{index .RepoDigests 0}}',
