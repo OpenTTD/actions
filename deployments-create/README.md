@@ -12,7 +12,7 @@ Variables are created by either `docker-vars` (vars) or `docker-publish` (publis
 Although not required, it is highly advised to use those GitHub Actions in combination with this GitHub Action.
 
 ```yaml
-- uses: openttd/actions/deployments-create@v1
+- uses: openttd/actions/deployments-create@v2
   with:
     # (required) ref that is linked to this deployment; use a SHA-hash
     ref: ${{ steps.vars.outputs.sha }}

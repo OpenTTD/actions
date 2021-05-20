@@ -10,7 +10,7 @@ First make sure to use `actions/checkout` to get the repository.
 This action should be called directly after that.
 
 ```yaml
-- uses: openttd/actions/checkout@v1
+- uses: openttd/actions/checkout@v2
   with:
     # checkout tags
     with-tags: false

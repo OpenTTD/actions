@@ -5,7 +5,7 @@ Update a existing GitHub deployment with a new state.
 ## Usage
 
 ```yaml
-- uses: openttd/actions/deployments-update@v1
+- uses: openttd/actions/deployments-update@v2
   with:
     # (required) new state of the deployment; one of the following: in_progress, success, failure
     state: success
