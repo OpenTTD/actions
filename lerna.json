@@ -2,6 +2,7 @@
   "packages": [
     "checkout",
     "checkout-dispatch",
+    "checkout-pull-request",
     "deploy-aws",
     "deployments-create",
     "deployments-update",

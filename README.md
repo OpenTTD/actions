@@ -9,6 +9,7 @@ As GitHub Actions doesn't allow to include workflows of other projects, this is 
 
 - [checkout](checkout/): Checkout tags and submodules; complements `actions/checkout`.
 - [checkout-dispatch](checkout-dispatch/): Checkout from `remote_dispatch` with `publish_latest_tag`.
+- [checkout-pull-request](checkout-pull-request/): Checkout all commits of a Pull Request.
 - [deploy-aws](deploy-aws/): Deploy new Docker image to AWS.
 - [deployments-create](deployments-create/): Create GitHub Deployments.
 - [deployments-update](deployments-update/): Update GitHub Deployments status.
