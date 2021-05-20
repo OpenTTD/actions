@@ -7,6 +7,7 @@ As GitHub Actions doesn't allow to include workflows of other projects, this is 
 
 ## Actions
 
+- [annotation-check](annotation-check/): Check if any previous job in a workflow has any annotation.
 - [checkout](checkout/): Checkout tags and submodules; complements `actions/checkout`.
 - [checkout-dispatch](checkout-dispatch/): Checkout from `remote_dispatch` with `publish_latest_tag`.
 - [checkout-pull-request](checkout-pull-request/): Checkout all commits of a Pull Request.
