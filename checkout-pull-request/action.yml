@@ -1,0 +1,7 @@
+name: 'OpenTTD - Checkout Pull Request'
+description: 'Checkout action to get the full history of a Pull Request'
+author: 'OpenTTD'
+inputs: {}
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
