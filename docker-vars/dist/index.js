@@ -63,7 +63,7 @@ function setOutput(name, value) {
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         const repository = core.getInput('repository', { required: true });
-        const branchName = core.getInput('branch-name') || 'master';
+        const branchName = core.getInput('branch-name') || 'main';
         const registryUsername = core.getInput('registry-username');
         const repositoryLowerCase = repository.toLowerCase();
         setOutput('name', repositoryLowerCase);
@@ -74,12 +74,12 @@ function run() {
         const sha = yield getOutputFromExec('git rev-parse --verify HEAD');
         setOutput('sha', sha);
         // Figure out if we are building for staging; this can either be because we
-        // are a remote-trigger with 'publish_master' or because our 'ref' is set to
-        // 'refs/heads/master' (instead of a tag). This is still a bit thin, but it
+        // are a remote-trigger with 'publish_main' or because our 'ref' is set to
+        // 'refs/heads/main' (instead of a tag). This is still a bit thin, but it
         // is all we got.
         let isStaging;
         if (github.context.eventName === 'repository_dispatch') {
-            if (github.context.payload.action === 'publish_master') {
+            if (github.context.payload.action === 'publish_main' || github.context.payload.action === 'publish_master') {
                 isStaging = true;
             }
             else {
@@ -87,7 +87,8 @@ function run() {
             }
         }
         else {
-            if (github.context.ref === `refs/heads/${branchName}`) {
+            if (github.context.ref === `refs/heads/${branchName}` ||
+                (branchName === 'main' && github.context.ref === 'refs/heads/master')) {
                 isStaging = true;
             }
             else {
