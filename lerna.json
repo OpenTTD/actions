@@ -1,5 +1,6 @@
 {
   "packages": [
+    "annotation-check",
     "checkout",
     "checkout-dispatch",
     "deploy-aws",

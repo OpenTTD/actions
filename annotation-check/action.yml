@@ -1,0 +1,10 @@
+name: 'OpenTTD - Annotation check'
+description: 'Check if any previous job in a workflow has an annotation'
+author: 'OpenTTD'
+inputs:
+  github-token:
+    description: 'GitHub Token; cannot be the GITHUB_TOKEN, as that token cannot trigger another workflow'
+    default: ${{ github.token }}
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
