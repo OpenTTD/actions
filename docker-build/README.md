@@ -5,7 +5,7 @@ Builds the Dockerfile in the root directory to an image.
 ## Usage
 
 ```yaml
-- uses: openttd/actions/docker-build@v1
+- uses: openttd/actions/docker-build@v2
   with:
     # (required) name of the Docker repository to use
     name: ${{ steps.vars.outputs.name }}

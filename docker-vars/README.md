@@ -6,7 +6,7 @@ This action takes care of that.
 ## Usage
 
 ```yaml
-- uses: openttd/actions/docker-vars@v1
+- uses: openttd/actions/docker-vars@v2
   with:
     # (required) Repository on Container Registry to use
     repository: ${{ github.repository }}
@@ -26,5 +26,5 @@ This action takes care of that.
 - `sha`: Sha-hash of the code producing this Docker image
 - `tag`: Main tag of the Docker image
 - `tags`: List of additional tags of the Docker image
-- `enviornment`: Environment this Docker image should be deployed on
+- `environment`: Environment this Docker image should be deployed on
 - `dry-run`: Is this a dry-run?

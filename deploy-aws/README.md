@@ -8,7 +8,7 @@ This is meant to be used on an AWS account where the OpenTTD stacks are deployed
 ## Usage
 
 ```yaml
-- uses: openttd/actions/deploy-aws@v1
+- uses: openttd/actions/deploy-aws@v2
   with:
     # (required) your AWS access key
     aws-access-key-id: YOUR-AWS-ACCESS-KEY-ID
