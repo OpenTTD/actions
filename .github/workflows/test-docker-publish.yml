@@ -1,0 +1,46 @@
+name: Docker Publish
+
+on:
+  push:
+    branches:
+    - main
+  pull_request:
+    branches:
+    - main
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Create Docker image
+      id: create
+      run: |
+        REPOSITORY_LC=$(echo "${{ github.repository }}" | tr [A-Z] [a-z])
+        echo "::set-output name=repository::${REPOSITORY_LC}"
+
+        echo "FROM alpine" > Dockerfile
+        docker build -t ghcr.io/${REPOSITORY_LC}:test-build .
+
+    # We cannot access the secrets from a PR, so only run this part on push.
+    - if: github.event_name == 'push'
+      name: Docker Publish
+      id: publish
+      uses: ./docker-publish
+      with:
+        registry: ghcr.io
+        registry-username: ${{ secrets.GHCR_USERNAME }}
+        registry-password: ${{ secrets.GHCR_PASSWORD }}
+        name: ${{ steps.create.outputs.repository }}
+        tag: test-build
+
+    - if: github.event_name == 'push'
+      name: Validate
+      run: |
+        if [ -z "${{ steps.publish.outputs.remote-tag }}" ]; then
+          exit 1
+        fi

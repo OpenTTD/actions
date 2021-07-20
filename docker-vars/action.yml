@@ -6,26 +6,105 @@ inputs:
     description: 'Repository on Container Registry to use'
     default: ${{ github.repository }}
   branch-name:
-    description: 'Name of the branch used for development (default=master)'
+    description: 'Name of the branch used for development (default=main)'
+    default: main
   registry-username:
     description: 'Username to use for registry (if unset, this will be a dry-run)'
+    default: ""
 outputs:
   name:
     description: 'Name of the Docker repository to use'
+    value: ${{ steps.result.outputs.name }}
   version:
     description: 'Version of the Docker image'
+    value: ${{ steps.result.outputs.version }}
   date:
     description: 'Date of the Docker image'
+    value: ${{ steps.result.outputs.date }}
   sha:
     description: 'Sha-hash of the code producing this Docker image'
+    value: ${{ steps.result.outputs.sha }}
   tag:
     description: 'Main tag of the Docker image'
+    value: ${{ steps.result.outputs.tag }}
   tags:
     description: 'List of additional tags of the Docker image'
+    value: ${{ steps.result.outputs.tags }}
   environment:
     description: 'Environment this Docker image should be deployed on'
+    value: ${{ steps.result.outputs.environment }}
   dry-run:
     description: 'Is this a dry-run?'
+    value: ${{ steps.result.outputs.dry-run }}
+
 runs:
-  using: 'node12'
-  main: 'dist/index.js'
+  using: 'composite'
+  steps:
+  - shell: bash
+    id: result
+    run: |
+      REPOSITORY_LC=$(echo "${{ inputs.repository }}" | tr [A-Z] [a-z])
+      VERSION=$(git describe --tags)
+      DATE=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+      SHA=$(git rev-parse --verify HEAD)
+
+      echo "Name: ${REPOSITORY_LC}"
+      echo "Version: ${VERSION}"
+      echo "Date: ${DATE}"
+      echo "Sha: ${SHA}"
+
+      echo "::set-output name=name::${REPOSITORY_LC}"
+      echo "::set-output name=version::${VERSION}"
+      echo "::set-output name=date::${DATE}"
+      echo "::set-output name=sha::${SHA}"
+
+      # Figure out if we are building for staging; this can either be because we
+      # are a remote-trigger with 'publish_main' or because our 'ref' is set to
+      # 'refs/heads/main' (instead of a tag). This is still a bit thin, but it
+      # is all we got.
+      if [ "${{ github.event_name }}" = "repository_dispatch" ]; then
+        if [ "${{ github.event.action }}" = "publish_main" ] || [ "${{ github.event.action }}" = "publish_master" ]; then
+          STAGING=1
+        else
+          STAGING=0
+        fi
+      else
+        if [ "${{ github.ref }}" = "refs/heads/${{ inputs.branch-name }}" ]; then
+          STAGING=1
+        elif [ "${{ inputs.branch-name }}" = "main" ] && [ "${{ github.ref }}" = "refs/heads/master" ]; then
+          # Some repositories still use "master" as default branch.
+          # If branch-name is "main", also allow "master".
+          STAGING=1
+        else
+          STAGING=0
+        fi
+      fi
+
+      if [ "${STAGING}" = "1" ]; then
+        echo "Environment: staging"
+        echo "Tag: development"
+        echo "Tags: dev"
+
+        echo "::set-output name=environment::staging"
+        echo "::set-output name=tag::development"
+        echo "::set-output name=tags::dev"
+      else
+        VERSION_MAJOR=$(echo "${VERSION}" | cut -d. -f1)
+        VERSION_MINOR=$(echo "${VERSION}" | cut -d. -f1,2)
+
+        echo "Environment: production"
+        echo "Tag: ${VERSION}"
+        echo "Tags: ${VERSION_MAJOR} ${VERSION_MINOR}"
+
+        echo "::set-output name=environment::production"
+        echo "::set-output name=tag::${VERSION}"
+        echo "::set-output name=tags::${VERSION_MAJOR} ${VERSION_MINOR}"
+      fi
+
+      if [ -n "${{ inputs.registry-username }}" ]; then
+        echo "Dry-run: false"
+        echo "::set-output name=dry-run::false"
+      else
+        echo "Dry-run: true"
+        echo "::set-output name=dry-run::true"
+      fi

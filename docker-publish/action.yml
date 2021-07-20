@@ -4,10 +4,13 @@ author: 'OpenTTD'
 inputs:
   registry:
     description: 'Registry to use for Docker images (default=Docker Hub)'
+    default: docker.io
   registry-username:
     description: 'Username to use for registry'
+    required: true
   registry-password:
     description: 'Password to use for registry'
+    required: true
   name:
     description: 'Name of the Docker repository to use'
     required: true
@@ -17,6 +20,24 @@ inputs:
 outputs:
   remote-tag:
     description: 'Tag of the Docker image as on remote repository'
+    value: ${{ steps.result.outputs.remote-tag }}
+
 runs:
-  using: 'node12'
-  main: 'dist/index.js'
+  using: 'composite'
+  steps:
+  - shell: bash
+    id: result
+    run: |
+      if [ -z "${{ inputs.registry-username }}" ] || [ -z "${{ inputs.registry-password }}" ]; then
+        echo "FATAL: either registry username or password is empty"
+        exit 1
+      fi
+
+      echo "${{ inputs.registry-password }}" | docker login ${{ inputs.registry }} --username ${{ inputs.registry-username }} --password-stdin
+      docker push --all-tags ${{ inputs.registry }}/${{ inputs.name }}
+
+      RAW_REMOTE_TAG=$(docker inspect --format="{{index .RepoDigests 0}}" ${{ inputs.registry }}/${{ inputs.name }}:${{ inputs.tag }})
+      REMOTE_TAG=$(echo "${RAW_REMOTE_TAG}" | cut -d@ -f2)
+
+      echo "Remote image tag: ${REMOTE_TAG}"
+      echo "::set-output name=remote-tag::${REMOTE_TAG}"
