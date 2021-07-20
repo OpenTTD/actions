@@ -14,6 +14,26 @@ inputs:
   name:
     description: 'The name of the component to deploy'
     required: true
+
 runs:
-  using: 'node12'
-  main: 'dist/index.js'
+  using: 'composite'
+  steps:
+  - shell: bash
+    run: |
+      if [ "${{ github.event.deployment.environment }}" = "production" ]; then
+        ENVIRONMENT="Production"
+      else
+        ENVIRONMENT="Staging"
+      fi
+
+      STACK="Live-${ENVIRONMENT}-${{ inputs.name }}"
+      PARAMETER="/Live/Version/${ENVIRONMENT}/${{ inputs.name }}"
+
+      export AWS_ACCESS_KEY_ID=${{ inputs.aws-access-key-id }}
+      export AWS_SECRET_ACCESS_KEY=${{ inputs.aws-secret-access-key }}
+
+      aws ssm put-parameter --region ${{ inputs.aws-region }} --name ${PARAMETER} --type String --overwrite --value "@${{ github.event.deployment.payload.tag }}" --description "${{ github.event.deployment.payload.version }} on ${{ github.event.deployment.payload.version }}"
+      aws cloudformation update-stack --region ${{ inputs.aws-region }} --stack-name ${STACK} --use-previous-template
+
+      echo "Waiting for deployment to finish .. (normally ~3 minutes)"
+      aws cloudformation wait stack-update-complete --region ${{ inputs.aws-region }} --stack-name ${STACK}
