@@ -9,5 +9,15 @@ inputs:
     description: 'should submodules be checked out'
     default: false
 runs:
-  using: 'node12'
-  main: 'dist/index.js'
+  using: 'composite'
+  steps:
+  - shell: bash
+    run: |
+      if [ -n "${{ inputs.with-tags }}" ]; then
+        git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+      fi
+      if [ -n "${{ inputs.with-submodules }}" ]; then
+        AUTH_HEADER=$(git config --local --get http.https://github.com/.extraheader)
+        git submodule sync --recursive
+        git -c "http.extraheader=${AUTH_HEADER}" -c protocol.version=2 submodule update --init --force --recursive --depth=1
+      fi

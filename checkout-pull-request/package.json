@@ -1,8 +1,0 @@
-{
-  "name": "@openttd-actions/checkout-pull-request",
-  "main": "lib/main.js",
-  "dependencies": {
-    "@actions/core": "^1.2.7",
-    "@actions/exec": "^1.0.4"
-  }
-}

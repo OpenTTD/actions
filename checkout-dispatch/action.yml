@@ -2,5 +2,21 @@ name: 'OpenTTD - Checkout Dispatch'
 description: 'Change git branch if dispatch event requested this'
 author: 'OpenTTD'
 runs:
-  using: 'node12'
-  main: 'dist/index.js'
+  using: 'composite'
+  steps:
+  - shell: bash
+    run: |
+      if [ "${{ github.context.eventName }}" != "repository_dispatch" ]; then
+        exit 0
+      fi
+      if [ "${{ github.context.payload.action }}" != "publish_latest_tag" ]; then
+        exit 0
+      fi
+
+      git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+      REV_LIST=$(git rev-list --tags --max-count=1)
+      DESCRIBE=$(git describe ${REV_LIST} --tags)
+      REF="refs/tags/${DESCRIBE}"
+
+      git checkout ${REF}
+      echo "Switched branch to ${REF}"

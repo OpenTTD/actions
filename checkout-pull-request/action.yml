@@ -3,5 +3,20 @@ description: 'Checkout action to get the full history of a Pull Request'
 author: 'OpenTTD'
 inputs: {}
 runs:
-  using: 'node12'
-  main: 'dist/index.js'
+  using: 'composite'
+  steps:
+  - shell: bash
+    run: |
+      DEPTH=4
+
+      while [ -z "$(git merge-base HEAD^ HEAD^2 2>/dev/null)" ]; do
+        git -c protocol.version=2 fetch --no-tags --prune --progress --no-recurse-submodules --deepen=${DEPTH} origin HEAD
+        DEPTH=$(expr ${DEPTH} \* 4)
+
+        if [ "${DEPTH}" = "256" ]; then
+          echo "No common parent found for this merge commit (max-depth of 256 reached)"
+          exit 1
+        fi
+      done
+
+      echo "Found common parent for this merge commit"

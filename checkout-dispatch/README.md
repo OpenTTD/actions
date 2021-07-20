@@ -1,8 +1,8 @@
 # OpenTTD - Checkout from dispatch
 
-In OpenTTD projects a `remote_dispatch` can have two event-types: either `publish_latest_tag` or `publish_master`.
+In OpenTTD projects a `remote_dispatch` can have two event-types: either `publish_latest_tag` or `publish_main`.
 In case of the first, the current checkout is switched to the tag.
-(`remote_dispatch` is always triggered on `master`).
+(`remote_dispatch` is always triggered on `main`, so nothing has to be done for `publish_main`).
 
 ## Usage
 
