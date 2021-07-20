@@ -6,10 +6,10 @@ runs:
   steps:
   - shell: bash
     run: |
-      if [ "${{ github.context.eventName }}" != "repository_dispatch" ]; then
+      if [ "${{ github.event_name }}" != "repository_dispatch" ]; then
         exit 0
       fi
-      if [ "${{ github.context.payload.action }}" != "publish_latest_tag" ]; then
+      if [ "${{ github.event.action }}" != "publish_latest_tag" ]; then
         exit 0
       fi
 

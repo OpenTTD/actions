@@ -9,11 +9,14 @@ jobs:
   test:
     name: Test
     runs-on: ubuntu-latest
+
     steps:
     - name: Checkout
       uses: actions/checkout@v2
+
     - name: Checkout PullRequest
       uses: ./checkout-pull-request
+
     - name: Validate
       run: |
         if [ "$(git log --oneline HEAD^..HEAD^2 | wc -l)" = "0" ]; then
