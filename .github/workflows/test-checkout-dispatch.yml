@@ -1,0 +1,22 @@
+name: Checkout Dispatch
+
+on:
+  push:
+    branches:
+    - main
+  pull_request:
+    branches:
+    - main
+
+jobs:
+  smoketest:
+    name: Smoketest
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Checkout Dispatch
+      uses: ./checkout-dispatch
+    # There is nothing really to test, as we cannot trigger the event that
+    # causes anything to happen. So we merely check that GitHub accepts the
+    # action.

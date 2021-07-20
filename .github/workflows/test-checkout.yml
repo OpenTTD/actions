@@ -1,0 +1,46 @@
+name: Checkout
+
+on:
+  push:
+    branches:
+    - main
+  pull_request:
+    branches:
+    - main
+
+jobs:
+  tags:
+    name: Test tags
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Checkout tags
+      uses: ./checkout
+      with:
+        with-tags: true
+    - name: Validate
+      run: |
+        if [ "$(git tag -l | wc -l)" = "0" ]; then
+          exit 1
+        fi
+
+  submodules:
+    name: Test submodules
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Add submodule
+      run: |
+        git submodule add https://github.com/OpenTTD/website
+        git submodule deinit -f website
+    - name: Checkout submodules
+      uses: ./checkout
+      with:
+        with-submodules: true
+    - name: Validate
+      run: |
+        if [ "$(ls website/ | wc -l)" = "0" ]; then
+          exit 1
+        fi
