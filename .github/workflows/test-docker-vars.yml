@@ -1,0 +1,65 @@
+name: Docker Vars
+
+on:
+  push:
+    branches:
+    - main
+  pull_request:
+    branches:
+    - main
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    - name: Docker Vars
+      id: vars
+      uses: ./docker-vars
+      with:
+        repository: TeSt/RePo
+        branch-name: main
+        registry-username: test
+
+    - name: Validate
+      run: |
+        if [ "${{ steps.vars.outputs.name }}" != "test/repo" ]; then
+          exit 1
+        fi
+        if [ -z "${{ steps.vars.outputs.version }}" ]; then
+          exit 1
+        fi
+        if [ -z "${{ steps.vars.outputs.date }}" ]; then
+          exit 1
+        fi
+        if [ -z "${{ steps.vars.outputs.sha }}" ]; then
+          exit 1
+        fi
+        if [ -z "${{ steps.vars.outputs.tag }}" ]; then
+          exit 1
+        fi
+        if [ -z "${{ steps.vars.outputs.tags }}" ]; then
+          exit 1
+        fi
+        if [ "${{ github.event_name }}" = "push" ]; then
+          if [ "${{ steps.vars.outputs.environment }}" != "staging" ]; then
+            exit 1
+          fi
+        else
+          # This is not meant to trigger on Pull Request; the result is that
+          # if you do trigger it on Pull Request, it thinks it is building for
+          # production.
+          if [ "${{ steps.vars.outputs.environment }}" != "production" ]; then
+            exit 1
+          fi
+        fi
+
+        if [ "${{ steps.vars.outputs.dry-run }}" != "false" ]; then
+          exit 1
+        fi

@@ -4,6 +4,7 @@ author: 'OpenTTD'
 inputs:
   registry:
     description: 'Registry to use for Docker images (default=Docker Hub)'
+    default: docker.io
   name:
     description: 'Name of the Docker repository to use'
     required: true
@@ -21,5 +22,16 @@ inputs:
     required: true
 
 runs:
-  using: 'node12'
-  main: 'dist/index.js'
+  using: 'composite'
+  steps:
+  - shell: bash
+    run: |
+      REPO=${{ inputs.registry }}/${{ inputs.name }}
+
+      docker build -t ${REPO}:${{ inputs.tag }} --build-arg BUILD_DATE=${{ inputs.date }} --build-arg BUILD_VERSION=${{ inputs.version }} .
+
+      IFS=' '
+      for alias in ${{ inputs.tags }}; do
+        docker tag ${REPO}:${{ inputs.tag }} ${REPO}:${alias}
+        echo "Successfully tagged ${REPO}:${alias}"
+      done
