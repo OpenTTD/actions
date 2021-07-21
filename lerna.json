@@ -1,7 +1,6 @@
 {
   "packages": [
-    "annotation-check",
-    "deploy-aws"
+    "annotation-check"
   ],
   "version": "independent"
 }
