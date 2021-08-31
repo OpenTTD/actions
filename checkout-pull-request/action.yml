@@ -13,7 +13,7 @@ runs:
         git -c protocol.version=2 fetch --no-tags --prune --progress --no-recurse-submodules --deepen=${DEPTH} origin HEAD
         DEPTH=$(expr ${DEPTH} \* 4)
 
-        if [ "${DEPTH}" = "256" ]; then
+        if [ "${DEPTH}" -gt "256" ]; then
           echo "No common parent found for this merge commit (max-depth of 256 reached)"
           exit 1
         fi
