@@ -22,6 +22,9 @@ Builds the Dockerfile in the root directory to an image.
     # (required) date of the Docker image (given to the Dockerfile as build-argument)
     date: ${{ steps.vars.outputs.date }}
 
+    # (optional) platform to build the Docker image for
+    platform: linux/amd64,linux/arm64
+
     # (optional) Docker registry to use for images
     registry: 'ghcr.io'
 ```
