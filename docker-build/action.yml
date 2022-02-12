@@ -20,9 +20,6 @@ inputs:
   date:
     description: 'Date of the Docker image'
     required: true
-  platform:
-    description: 'Platform to build the Docker image for (e.g.: linux/amd64,linux/arm64)'
-    default: linux/amd64
 
 runs:
   using: 'composite'
@@ -31,7 +28,7 @@ runs:
     run: |
       REPO=${{ inputs.registry }}/${{ inputs.name }}
 
-      docker buildx build --platform ${{ inputs.platform }} -t ${REPO}:${{ inputs.tag }} --build-arg BUILD_DATE=${{ inputs.date }} --build-arg BUILD_VERSION=${{ inputs.version }} .
+      docker build -t ${REPO}:${{ inputs.tag }} --build-arg BUILD_DATE=${{ inputs.date }} --build-arg BUILD_VERSION=${{ inputs.version }} .
 
       IFS=' '
       for alias in ${{ inputs.tags }}; do
