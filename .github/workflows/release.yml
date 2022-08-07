@@ -1,0 +1,22 @@
+name: Release
+
+on:
+  release:
+    types:
+    - published
+
+jobs:
+  major_tag:
+    name: Force major tag
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Update major tag
+      run: |
+        # This turns 'v1.2.3' into 'v1'
+        MAJOR_VERSION=$(echo "${{ github.event.release.tag_name }}" | cut -d\. -f1)
+        git tag -f ${MAJOR_VERSION}
+        git push -f origin ${MAJOR_VERSION}
