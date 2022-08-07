@@ -1,8 +1,26 @@
 {
   "name": "@openttd-actions/annotation-check",
-  "main": "lib/main.js",
+  "main": "src/main.js",
+  "scripts": {
+    "build": "ncc build src/main.ts",
+    "clean": "rm -rf node_modules package-lock.json dist",
+    "dev": "ncc build --watch src/main.ts",
+    "format": "prettier --write src/*.ts",
+    "test:build": "ncc build -C -q src/main.ts",
+    "test:format": "prettier --check src/*.ts",
+    "test:lint": "eslint -- src/*.ts",
+    "test": "npm run test:format && npm run test:lint && npm run test:build"
+  },
   "dependencies": {
-    "@actions/core": "^1.2.7",
-    "@actions/github": "^4.0.0"
+    "@actions/core": "^1.9.0",
+    "@actions/github": "^5.0.3"
+  },
+  "devDependencies": {
+    "@typescript-eslint/parser": "^5.32.0",
+    "@vercel/ncc": "^0.34.0",
+    "eslint": "^8.21.0",
+    "eslint-plugin-github": "^4.3.7",
+    "prettier": "^2.7.1",
+    "typescript": "^4.7.4"
   }
 }

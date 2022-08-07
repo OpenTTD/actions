@@ -23,3 +23,9 @@ the steps in the workflow.
     - name: Check annotations
       uses: OpenTTD/actions/annotation-check@v2
 ```
+
+## Development
+
+- `npm run build`: To compile the TypeScript into JavaScript.
+- `npm run format`: To fix any coding-style errors automatically.
+- `npm run test`: To run linter, check for coding-style errors, etc.

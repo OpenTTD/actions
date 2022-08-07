@@ -14,7 +14,7 @@ async function run(): Promise<void> {
 
   const octokit = github.getOctokit(githubToken)
 
-  const check_suite = await octokit.actions.getWorkflowRun({
+  const check_suite = await octokit.rest.actions.getWorkflowRun({
     owner,
     repo,
     run_id
@@ -23,7 +23,7 @@ async function run(): Promise<void> {
     throw new Error("Couldn't find check_suite_id for current run")
   }
 
-  const list_runs = await octokit.checks.listForSuite({
+  const list_runs = await octokit.rest.checks.listForSuite({
     owner,
     repo,
     check_suite_id: check_suite.data.check_suite_id
@@ -49,7 +49,8 @@ async function run(): Promise<void> {
 async function main(): Promise<void> {
   try {
     await run()
-  } catch (error) {
+  } catch (e) {
+    const error = e as Error
     core.setFailed(error.message)
   }
 }
