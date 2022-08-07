@@ -47,7 +47,7 @@ jobs:
     concurrency: deployment
     environment:
       name: ${{ inputs.is_staging && 'Staging' || 'Production' }}
-      url: ${{ inputs.url_staging }}
+      url: ${{ inputs.is_staging && inputs.url_staging || inputs.url_production }}
 
     steps:
     - name: Deploy to AWS
