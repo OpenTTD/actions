@@ -1,0 +1,50 @@
+name: CI - Annotation Check
+
+on:
+  push:
+    branches:
+    - main
+  pull_request:
+    branches:
+    - main
+
+jobs:
+  ci:
+    name: CI
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 16
+        cache: 'npm'
+        cache-dependency-path: annotation-check/package-lock.json
+
+    - name: Install dependencies
+      run: |
+        cd annotation-check
+        npm install
+
+    - name: Run tests
+      run: |
+        cd annotation-check
+        npm run test
+
+    - name: Validate build
+      run: |
+        cd annotation-check
+        npm run build
+
+        if git diff-index --quiet HEAD; then
+          echo "::error::Build folder is not up-to-date"
+          echo "Did you forget to run 'npm run build' before committing?"
+          echo "The diff looks like this:"
+          echo ""
+          git status
+          echo ""
+          git diff
+          exit 1
+        fi
