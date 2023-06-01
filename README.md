@@ -13,3 +13,19 @@ This repository contains several GitHub Actions and Workflows that help with the
 
 - [aws-deployment](aws-deployment/): Deploys a new version of a CloudFormation Stack to AWS.
 - [publish-image](publish-image/): To publish a Docker image to GitHub Container Registry.
+
+## Reusing Workflows
+
+Example of how to use a [reusing workflows](https://docs.github.com/en/actions/using-workflows/reusing-workflows):
+
+```
+job:
+  uses: OpenTTD/actions/.github/workflows/rw-<workflow>.yml@v3
+  with:
+    # See each workflow for their parameters.
+```
+
+- [Annotation Check](.github/workflows/rw-annotation-check.yml): Checks if any of the earlier jobs have any annotation.
+- [Python - Black](.github/workflows/rw-py-black.yml): Runs "black" over the code.
+- [Python - CodeQL](.github/workflows/rw-py-codeql.yml): Runs "CodeQL" over the code.
+- [Python - Flake8](.github/workflows/rw-py-flake8.yml): Runs "flake8" over the code.

@@ -1,0 +1,19 @@
+name: Annotation check
+
+# Checks if any job that ran before this job has any annotation.
+# If it does, it will fail the job.
+
+on:
+  workflow_call:
+
+jobs:
+  annotation_check:
+    name: Check Annotations
+
+    if: always() && github.event_name == 'pull_request'
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check annotations
+      uses: OpenTTD/actions/annotation-check@v3

@@ -1,0 +1,25 @@
+name: Flake8
+
+# Runs the flake8 code checker on Python files.
+
+on:
+  workflow_call:
+    inputs:
+      path:
+        description: Path to check
+        required: true
+        type: string
+
+jobs:
+  flake8:
+    name: Flake8
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Flake8
+      uses: TrueBrain/actions-flake8@v2
+      with:
+        path: ${{ inputs.path }}
