@@ -8,7 +8,7 @@ on:
 
 jobs:
   annotation_check:
-    name: Check Annotations
+    name: Annotation Check
 
     if: always() && github.event_name == 'pull_request'
 
