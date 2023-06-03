@@ -5,7 +5,7 @@ name: Black
 on:
   workflow_call:
     inputs:
-      path:
+      python-path:
         description: Path to check
         required: true
         type: string
@@ -32,4 +32,4 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install black
-        black -l 120 --check ${{ inputs.path }}
+        black -l 120 --check ${{ inputs.python-path }}

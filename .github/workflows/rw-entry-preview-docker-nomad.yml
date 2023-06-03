@@ -1,0 +1,64 @@
+name: Preview (Docker + Nomad)
+
+# A generic reusing workflow that releases a preview of a project that:
+# - use Docker.
+# - use Nomad.
+
+on:
+  workflow_call:
+    inputs:
+      service:
+        description: Name of the service on Nomad
+        required: true
+        type: string
+      source-root:
+        description: Root location of the project (where Dockerfile is)
+        default: .
+        type: string
+      url:
+        description: URL of the service
+        required: true
+        type: string
+    secrets:
+      NOMAD_CF_ACCESS_CLIENT_ID:
+        description: Cloudflare Access Client ID for nomad.openttd.org access
+        required: true
+      NOMAD_CF_ACCESS_CLIENT_SECRET:
+        description: Cloudflare Access Client Secret for nomad.openttd.org access
+        required: true
+
+concurrency:
+  group: preview
+  cancel-in-progress: true
+
+jobs:
+  preview_labels_pre:
+    name: Update preview labels
+    uses: ./.github/workflows/rw-preview-label.yml
+
+  release:
+    name: Release
+    uses: ./.github/workflows/rw-docker-build.yml
+    with:
+      source-root: ${{ inputs.source-root }}
+      publish: true
+
+  deploy:
+    needs:
+    - release
+
+    name: Deploy
+    uses: ./.github/workflows/rw-nomad-deploy.yml
+    secrets: inherit
+    with:
+      environment: Preview
+      service: ${{ inputs.service}}
+      url: ${{ inputs.url }}
+      version: "@sha256:${{ needs.release.outputs.digest }}"
+
+  preview_labels_post:
+    needs:
+    - deploy
+
+    name: Update preview labels
+    uses: ./.github/workflows/rw-preview-label.yml

@@ -1,0 +1,52 @@
+name: Update Preview Label
+
+# Ensure that only this Pull Request has the preview label.
+
+on:
+  workflow_call:
+
+jobs:
+  preview_labels:
+    name: Update preview labels
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Remove preview label from all other PRs
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const issues = await github.rest.issues.listForRepo({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            labels: 'preview',
+          });
+
+          for (const issue of issues.data) {
+            if (issue.number === context.issue.number) continue;
+            if (!issue.pull_request) continue;
+
+            console.log(`Removing label from #${issue.number}`);
+
+            await github.rest.issues.removeLabel({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue.number,
+              name: 'preview',
+            });
+          }
+
+    # When two PRs get the Preview label before they can execute, the first will
+    # remove the label from the second, and the second from the first. This would
+    # leave no PR with a Preview label. So always make sure that if we finish,
+    # our PR has a preview label. As by concurrency one PR always finishes last,
+    # the last one is now guaranteed to have a preview label.
+    - name: Ensure we have a preview label
+      uses: actions/github-script@v6
+      with:
+        script: |
+          await github.rest.issues.addLabels({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: context.issue.number,
+            labels: ['preview'],
+          });

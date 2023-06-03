@@ -1,0 +1,18 @@
+name: Testing Docker / Py
+
+on:
+  push:
+    branches:
+    - main
+  pull_request:
+    branches:
+    - main
+
+jobs:
+  smoketest:
+    name: Smoketest
+    uses: ./.github/workflows/rw-entry-testing-docker-py.yml
+    with:
+      source-root: test-docker-py
+      python-path: test
+      python-version: 3.8

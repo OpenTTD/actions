@@ -5,7 +5,7 @@ name: Flake8
 on:
   workflow_call:
     inputs:
-      path:
+      python-path:
         description: Path to check
         required: true
         type: string
@@ -22,4 +22,4 @@ jobs:
     - name: Flake8
       uses: TrueBrain/actions-flake8@v2
       with:
-        path: ${{ inputs.path }}
+        path: ${{ inputs.python-path }}
