@@ -1,0 +1,52 @@
+name: Nomad Deploy
+
+# Deploys a new version on Nomad.
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        description: The GitHub environment to deploy to
+        required: true
+        type: string
+      service:
+        description: Name of the service to deploy
+        required: true
+        type: string
+      url:
+        description: URL of the deployment
+        required: true
+        type: string
+      version:
+        description: New version of the service to deploy
+        required: true
+        type: string
+    secrets:
+      NOMAD_CF_ACCESS_CLIENT_ID:
+        description: Cloudflare Access Client ID for nomad.openttd.org access
+        required: true
+      NOMAD_CF_ACCESS_CLIENT_SECRET:
+        description: Cloudflare Access Client Secret for nomad.openttd.org access
+        required: true
+
+concurrency:
+  group: nomad-deploy
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy
+
+    environment:
+      name: ${{ inputs.environment }}
+      url: ${{ inputs.url }}
+
+    steps:
+    - name: Deploy
+      run: |
+        curl --fail -L -s -N -X POST \
+          -H "CF-Access-Client-Id: ${{ secrets.NOMAD_CF_ACCESS_CLIENT_ID }}" \
+          -H "CF-Access-Client-Secret: ${{ secrets.NOMAD_CF_ACCESS_CLIENT_SECRET }}" \
+          -H "Content-Type: application/json" \
+          -d '{"Meta":{"version":"${{ inputs.version }}"}}' \
+          https://nomad.openttd.org/v1/job/${{ inputs.service }}-deploy/dispatch

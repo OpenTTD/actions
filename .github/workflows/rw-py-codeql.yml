@@ -9,6 +9,10 @@ on:
         description: Python version
         required: true
         type: string
+      source-root:
+        description: Root location of the project (where requirements.txt is)
+        default: .
+        type: string
 
 jobs:
   codeql:
@@ -25,13 +29,14 @@ jobs:
         python-version: ${{ inputs.python-version }}
 
     - name: Install dependencies
-      run: python -m pip install -r requirements.txt
+      run: python -m pip install -r ${{ inputs.source-root }}/requirements.txt
 
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v2
       with:
         languages: python
         queries: security-and-quality
+        source-root: ${{ inputs.source-root }}
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2

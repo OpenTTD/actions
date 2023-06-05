@@ -1,0 +1,62 @@
+name: Testing (Docker + Python)
+
+# A generic reusing workflow that tests everything for projects that:
+# - use Docker.
+# - use Python.
+
+on:
+  workflow_call:
+    inputs:
+      python-path:
+        description: Path with Python code (relative to "source-root")
+        required: true
+        type: string
+      python-version:
+        description: Python version
+        required: true
+        type: string
+      source-root:
+        description: Root location of the project (where requirements.txt and Dockerfile are)
+        default: .
+        type: string
+
+concurrency:
+  group: testing-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+jobs:
+  build:
+    name: Build
+    uses: ./.github/workflows/rw-docker-build.yml
+    with:
+      source-root: ${{ inputs.source-root }}
+
+  codeql:
+    name: CodeQL
+    uses: ./.github/workflows/rw-py-codeql.yml
+    with:
+      python-version: ${{ inputs.python-version }}
+      source-root: ${{ inputs.source-root }}
+
+  flake8:
+    name: Flake8
+    uses: ./.github/workflows/rw-py-flake8.yml
+    with:
+      python-path: ${{ inputs.source-root }}/${{ inputs.python-path }}
+
+  black:
+    name: Black
+    uses: ./.github/workflows/rw-py-black.yml
+    with:
+      python-version: ${{ inputs.python-version }}
+      python-path: ${{ inputs.source-root }}/${{ inputs.python-path }}
+
+  annotation_check:
+    name: Annotation Check
+    needs:
+    - build
+    - flake8
+    - black
+    # not codeql, as that reports its own status
+
+    uses: ./.github/workflows/rw-annotation-check.yml
