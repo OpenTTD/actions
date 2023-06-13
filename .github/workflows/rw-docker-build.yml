@@ -13,6 +13,10 @@ on:
         description: Root location of the project (where Dockerfile is)
         default: .
         type: string
+      ref:
+        description: Ref to build (or empty to use the current context)
+        default: ''
+        type: string
     outputs:
       version:
         description: The version of the image produced
@@ -38,6 +42,7 @@ jobs:
       uses: actions/checkout@v3
       with:
         fetch-depth: 0
+        ref: ${{ inputs.ref }}
 
     - name: Metadata (GitHub)
       id: metadata-github
