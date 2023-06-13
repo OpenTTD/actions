@@ -1,0 +1,34 @@
+name: Nomad Reload
+
+# Triggers the reload triggers of a service on Nomad.
+
+on:
+  workflow_call:
+    inputs:
+      service:
+        description: Name of the service to reload
+        required: true
+        type: string
+    secrets:
+      NOMAD_SERVICE_KEY:
+        description: Secret key to reload services
+        required: true
+      RELOAD_SECRET:
+        description: Reload secret to reload service
+        required: true
+
+concurrency:
+  group: nomad-reload-${{ inputs.service }}
+
+jobs:
+  reload:
+    runs-on: ubuntu-latest
+    name: Reload
+
+    steps:
+    - name: Reload
+      run: |
+        curl --fail -L -s -N -X POST \
+          -H "Content-Type: application/json" \
+          -d '{"secret":"${{ secrets.RELOAD_SECRET }}"}' \
+          https://nomad-service.openttd.org/reload/${{ inputs.service }}/${{ secrets.NOMAD_SERVICE_KEY }}
