@@ -39,6 +39,7 @@ jobs:
     with:
       source-root: ${{ inputs.source-root }}
       publish: true
+      ref: ${{ github.event.pull_request.head.sha }}
 
   deploy:
     needs:
