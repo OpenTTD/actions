@@ -27,7 +27,7 @@ on:
         required: true
 
 concurrency:
-  group: nomad-deploy
+  group: nomad-deploy-${{ inputs.service }}
 
 jobs:
   deploy:

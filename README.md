@@ -24,6 +24,7 @@ job:
 - [Entry - Release - Docker/Nomad](.github/workflows/rw-entry-release-docker-nomad.yml): Entrypoint for releasing projects using Docker and Nomad
 - [Entry - Testing - Docker/Python](.github/workflows/rw-entry-testing-docker-py.yml): Entrypoint for testing projects using Docker and Python
 - [Nomad - Deploy](.github/workflows/rw-nomad-deploy.yml): Deploy a new service no Nomad.
+- [Nomad - Reload](.github/workflows/rw-nomad-reload.yml): Triggers the reload triggers of a service on Nomad.
 - [Preview - Label](.github/workflows/rw-preview-label.yml): Ensure this PR is the only one with a preview label.
 - [Python - Black](.github/workflows/rw-py-black.yml): Runs "black" over the code.
 - [Python - CodeQL](.github/workflows/rw-py-codeql.yml): Runs "CodeQL" over the code.
