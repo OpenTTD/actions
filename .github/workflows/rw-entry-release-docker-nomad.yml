@@ -20,11 +20,8 @@ on:
         required: true
         type: string
     secrets:
-      NOMAD_CF_ACCESS_CLIENT_ID:
-        description: Cloudflare Access Client ID for nomad.openttd.org access
-        required: true
-      NOMAD_CF_ACCESS_CLIENT_SECRET:
-        description: Cloudflare Access Client Secret for nomad.openttd.org access
+      NOMAD_SERVICE_PROD_KEY:
+        description: Secret key to deploy the production service
         required: true
 
 concurrency:
@@ -45,7 +42,8 @@ jobs:
 
     name: Deploy
     uses: ./.github/workflows/rw-nomad-deploy.yml
-    secrets: inherit
+    secrets:
+      NOMAD_SERVICE_KEY: ${{ secrets.NOMAD_SERVICE_PROD_KEY }}
     with:
       environment: Production
       service: ${{ inputs.service }}
