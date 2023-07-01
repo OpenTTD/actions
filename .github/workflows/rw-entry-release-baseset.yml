@@ -1,0 +1,78 @@
+name: Release (Baseset)
+
+# A generic reusing workflow that releases a OpenTTD baseset project (OpenGFX, OpenSFX, or OpenMSX).
+
+on:
+  workflow_call:
+    inputs:
+      apt-packages:
+        description: A list of apt packages to install.
+        required: false
+        type: string
+      name:
+        description: The name of the project.
+        required: true
+        type: string
+      pip-packages:
+        description: A list of pip packages to install.
+        required: false
+        type: string
+      problem-matcher:
+        description: A problem matcher to use.
+        default: ""
+        required: false
+        type: string
+    secrets:
+      CDN_SIGNING_KEY:
+        description: The signing key for the CDN.
+        required: true
+      DEPLOYMENT_APP_ID:
+        description: The ID of the GitHub App used to trigger deployments.
+        required: true
+      DEPLOYMENT_APP_PRIVATE_KEY:
+        description: The private key of the GitHub App used to trigger deployments.
+        required: true
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  metadata:
+    name: Metadata
+    uses: ./.github/workflows/rw-baseset-metadata.yml
+    with:
+      name: ${{ inputs.name }}
+
+  build:
+    if: ${{ needs.metadata.outputs.skip == 'false' }}
+    needs:
+    - metadata
+
+    name: Build
+    uses: ./.github/workflows/rw-baseset-build.yml
+    with:
+      apt-packages: ${{ inputs.apt-packages }}
+      name: ${{ inputs.name }}
+      pip-packages: ${{ inputs.pip-packages }}
+      problem-matcher: ${{ inputs.problem-matcher }}
+      publish: true
+      release-date: ${{ needs.metadata.outputs.release-date }}
+      version: ${{ needs.metadata.outputs.version }}
+
+  publish:
+    if: ${{ needs.metadata.outputs.skip == 'false' }}
+    needs:
+    - build
+    - metadata
+
+    name: Publish
+    uses: ./.github/workflows/rw-cdn-upload.yml
+    secrets:
+      CDN_SIGNING_KEY: ${{ secrets.CDN_SIGNING_KEY }}
+      DEPLOYMENT_APP_ID: ${{ secrets.DEPLOYMENT_APP_ID }}
+      DEPLOYMENT_APP_PRIVATE_KEY: ${{ secrets.DEPLOYMENT_APP_PRIVATE_KEY }}
+    with:
+      artifact-name: bundles
+      folder: ${{ needs.metadata.outputs.folder }}
+      version: ${{ needs.metadata.outputs.version }}

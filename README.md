@@ -19,9 +19,14 @@ job:
 ```
 
 - [Annotation Check](.github/workflows/rw-annotation-check.yml): Checks if any of the earlier jobs have any annotation.
+- [Baseset - Build](.github/workflows/rw-baseset-build.yml): Build an OpenTTD baseset repository.
+- [Baseset - Metadata](.github/workflows/rw-baseset-build.yml): Detects metadata for an OpenTTD baseset repository.
+- [CDN - upload](.github/workflows/rw-cdn-upload.yml): Upload the content of an artifact to the CDN.
 - [Docker - Build](.github/workflows/rw-docker-build.yml): Build a new Docker container, multi-arch, and push to GitHub Container Registry.
 - [Entry - Preview - Docker/Nomad](.github/workflows/rw-entry-preview-docker-nomad.yml): Entrypoint for previewing projects using Docker and Nomad
+- [Entry - Release - Baseset](.github/workflows/rw-entry-release-baseset.yml): Entrypoint for releasing baseset projects (OpenGFX, OpenSFX, OpenMSX)
 - [Entry - Release - Docker/Nomad](.github/workflows/rw-entry-release-docker-nomad.yml): Entrypoint for releasing projects using Docker and Nomad
+- [Entry - Testing - Baseset](.github/workflows/rw-entry-testing-baseset.yml): Entrypoint for testing baseset projects (OpenGFX, OpenSFX, OpenMSX)
 - [Entry - Testing - Docker/Python](.github/workflows/rw-entry-testing-docker-py.yml): Entrypoint for testing projects using Docker and Python
 - [Nomad - Deploy](.github/workflows/rw-nomad-deploy.yml): Deploy a new service no Nomad.
 - [Nomad - Reload](.github/workflows/rw-nomad-reload.yml): Triggers the reload triggers of a service on Nomad.

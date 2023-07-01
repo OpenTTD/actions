@@ -1,0 +1,90 @@
+name: CDN Upload
+
+# Upload the content of an artifact to the CDN.
+
+on:
+  workflow_call:
+    inputs:
+      artifact-name:
+        description: The name of the artifact to download.
+        required: true
+        type: string
+      folder:
+        description: The folder to upload the artifact to.
+        required: true
+        type: string
+      version:
+        description: The version of the artifact to upload.
+        required: true
+        type: string
+    secrets:
+      CDN_SIGNING_KEY:
+        description: The signing key for the CDN.
+        required: true
+      DEPLOYMENT_APP_ID:
+        description: The ID of the GitHub App used to trigger deployments.
+        required: true
+      DEPLOYMENT_APP_PRIVATE_KEY:
+        description: The private key of the GitHub App used to trigger deployments.
+        required: true
+
+jobs:
+  cdn_upload:
+    runs-on: ubuntu-latest
+    name: CDN upload
+
+    steps:
+    - name: Download artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: ${{ inputs.artifact-name }}
+        path: artifact
+
+    - name: Install mimetype
+      shell: bash
+      run: |
+        sudo apt update
+        sudo apt install -y libfile-mimeinfo-perl --no-install-recommends
+
+    - name: Publish
+      env:
+        CDN_SIGNING_KEY: ${{ secrets.CDN_SIGNING_KEY }}
+      shell: bash
+      run: |
+        echo "${CDN_SIGNING_KEY}" > cdn_signing_key.pem
+
+        cd artifact
+
+        for i in $(ls); do
+          echo "Uploading ${i} ..."
+
+          FILENAME="${{ inputs.folder }}/${{ inputs.version }}/${i}"
+          SIGNATURE=$(echo -n "${FILENAME}" | openssl dgst -sha256 -sign ../cdn_signing_key.pem | base64 -w0)
+          CONTENT_TYPE=$(mimetype -b ${i})
+
+          curl \
+            -s \
+            --fail \
+            -X PUT \
+            -T ${i} \
+            -H "Content-Type: ${CONTENT_TYPE}" \
+            -H "X-Signature: ${SIGNATURE}" \
+            -H "User-Agent: cdn-upload/1.0" \
+            https://cdn-preview.openttd.org/${FILENAME}
+        done
+
+    - name: Generate access token
+      id: generate_token
+      uses: tibdex/github-app-token@v1
+      with:
+        app_id: ${{ secrets.DEPLOYMENT_APP_ID }}
+        private_key: ${{ secrets.DEPLOYMENT_APP_PRIVATE_KEY }}
+        repository: OpenTTD/workflows
+
+    - name: Trigger 'update CDN'
+      uses: peter-evans/repository-dispatch@v1
+      with:
+        token: ${{ steps.generate_token.outputs.token }}
+        repository: OpenTTD/workflows
+        event-type: update-cdn
+        client-payload: '{"version": "${{ inputs.version }}", "folder": "${{ inputs.folder }}"}'

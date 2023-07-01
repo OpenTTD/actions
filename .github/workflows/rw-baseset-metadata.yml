@@ -1,0 +1,83 @@
+name: Baseset Metadata
+
+# Detects metadata for an OpenTTD baseset repository.
+
+on:
+  workflow_call:
+    inputs:
+      name:
+        description: The name of the project.
+        required: true
+        type: string
+    outputs:
+      folder:
+        description: The folder to publish to.
+        value: ${{ jobs.metadata.outputs.folder }}
+      release-date:
+        description: The release date to publish.
+        value: ${{ jobs.metadata.outputs.release-date }}
+      skip:
+        description: Whether to skip the workflow.
+        value: ${{ jobs.metadata.outputs.skip }}
+      version:
+        description: The version to publish.
+        value: ${{ jobs.metadata.outputs.version }}
+
+jobs:
+  metadata:
+    runs-on: ubuntu-latest
+    name: Metadata
+
+    outputs:
+      folder: ${{ steps.metadata.outputs.folder }}
+      release-date: ${{ steps.metadata.outputs.release-date }}
+      skip: ${{ steps.metadata.outputs.skip }}
+      version: ${{ steps.metadata.outputs.version }}
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Metadata
+      id: metadata
+      shell: bash
+      run: |
+        FULL_VERSION=$(./findversion.sh)
+        RELEASE_DATE=$(TZ='UTC' date +"%Y-%m-%d %H:%M UTC")
+        VERSION=$(echo "${FULL_VERSION}" | cut -f 1 -d$'\t')
+        IS_TAG=$(echo "${FULL_VERSION}" | cut -f 5 -d$'\t')
+
+        # If we run on "schedule" / "workflow-dispatch", we are producting a nightly.
+        # Otherwise it is a release.
+        if [ "${{ github.event_name }}" = "schedule" ] || [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+          FOLDER="${{ inputs.name }}-nightlies"
+
+          # Download the latest version we published; if we are different, it
+          # is safe to assume we are newer.
+          LATEST_VERSION=$(curl --fail -s https://cdn.openttd.org/${FOLDER}/latest.yaml | grep version | cut -d: -f2 | cut -b 2-)
+
+          if [ "${IS_TAG}" = "1" ]; then
+            echo "Run on schedule; going to skip this run, last change was released"
+            SKIP="true"
+          elif [ "${LATEST_VERSION}" = "${VERSION}" ]; then
+            echo "Run on schedule; going to skip this run, as we already build this version"
+            SKIP="true"
+          else
+            SKIP="false"
+          fi
+        else
+          FOLDER="${{ inputs.name }}-releases"
+          SKIP="false"
+        fi
+
+        echo "folder=${FOLDER}" >> $GITHUB_OUTPUT
+        echo "release-date=${RELEASE_DATE}" >> $GITHUB_OUTPUT
+        echo "skip=${SKIP}" >> $GITHUB_OUTPUT
+        echo "version=${VERSION}" >> $GITHUB_OUTPUT
+
+        echo "Folder: ${FOLDER}"
+        echo "Release-date: ${RELEASE_DATE}"
+        echo "Skip: ${SKIP}"
+        echo "Version: ${VERSION}"

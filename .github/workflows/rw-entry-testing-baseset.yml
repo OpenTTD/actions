@@ -1,0 +1,48 @@
+name: Testing (Baseset)
+
+# A generic reusing workflow that tests a OpenTTD baseset project (OpenGFX, OpenSFX, or OpenMSX).
+
+on:
+  workflow_call:
+    inputs:
+      apt-packages:
+        description: A list of apt packages to install.
+        required: false
+        type: string
+      name:
+        description: The name of the project.
+        required: true
+        type: string
+      pip-packages:
+        description: A list of pip packages to install.
+        required: false
+        type: string
+      problem-matcher:
+        description: A problem matcher to use.
+        default: ""
+        required: false
+        type: string
+
+concurrency:
+  group: testing-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' && github.ref != 'refs/heads/master' }}
+
+jobs:
+  build:
+    name: Build
+    uses: ./.github/workflows/rw-baseset-build.yml
+    with:
+      apt-packages: ${{ inputs.apt-packages }}
+      name: ${{ inputs.name }}
+      pip-packages: ${{ inputs.pip-packages }}
+      problem-matcher: ${{ inputs.problem-matcher }}
+      publish: false
+      release-date: ""
+      version: dev
+
+  annotation_check:
+    name: Annotation Check
+    needs:
+    - build
+
+    uses: ./.github/workflows/rw-annotation-check.yml
