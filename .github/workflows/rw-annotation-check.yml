@@ -16,4 +16,4 @@ jobs:
 
     steps:
     - name: Check annotations
-      uses: OpenTTD/actions/annotation-check@v3
+      uses: OpenTTD/actions/annotation-check@v4

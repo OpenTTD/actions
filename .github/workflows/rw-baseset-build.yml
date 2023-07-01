@@ -1,0 +1,123 @@
+name: Baseset Build
+
+# Build an OpenTTD baseset repository.
+
+on:
+  workflow_call:
+    inputs:
+      apt-packages:
+        description: A list of apt packages to install.
+        default: ""
+        required: false
+        type: string
+      name:
+        description: The name of the project.
+        required: true
+        type: string
+      pip-packages:
+        description: A list of pip packages to install.
+        default: ""
+        required: false
+        type: string
+      problem-matcher:
+        description: A problem matcher to use.
+        default: ""
+        required: false
+        type: string
+      publish:
+        description: Whether to publish the bundles.
+        default: false
+        required: false
+        type: boolean
+      release-date:
+        description: The release date of the project.
+        required: true
+        type: string
+      version:
+        description: The version of the project.
+        required: true
+        type: string
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Build
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Install apt dependencies
+      if: ${{ inputs.apt-packages != '' }}
+      shell: bash
+      run: |
+        sudo apt update
+        sudo apt install -y ${{ inputs.apt-packages }} --no-install-recommends
+
+    - name: Set up Python 3.8
+      if: ${{ inputs.pip-packages != '' }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.8
+
+    - name: Install pip dependencies
+      if: ${{ inputs.pip-packages != '' }}
+      shell: bash
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install ${{ inputs.pip-packages }}
+
+    - name: Install problem matcher
+      if: ${{ inputs.problem-matcher != '' }}
+      shell: bash
+      run: |
+        echo "::add-matcher::${{ inputs.problem-matcher }}"
+
+    - name: Build
+      shell: bash
+      run: |
+        make maintainer-clean
+        make bundle_zip bundle_xsrc
+
+    - name: Move bundles
+      if: ${{ inputs.publish }}
+      shell: bash
+      run: |
+        mkdir bundles
+
+        mv ${{ inputs.name }}-${{ inputs.version }}-source.tar.xz bundles/
+        mv ${{ inputs.name }}-${{ inputs.version }}-all.zip bundles/
+
+    - name: Create checksums
+      if: ${{ inputs.publish }}
+      shell: bash
+      run: |
+        cd bundles
+
+        for i in $(ls); do
+          openssl dgst -r -md5 -hex $i > $i.md5sum
+          openssl dgst -r -sha1 -hex $i > $i.sha1sum
+          openssl dgst -r -sha256 -hex $i > $i.sha256sum
+        done
+
+    - name: Prepare bundles folder
+      if: ${{ inputs.publish }}
+      shell: bash
+      run: |
+        cd bundles
+
+        echo "${{ inputs.release-date }}" > released.txt
+        cp ../README.md .
+        cp ../changelog.txt .
+
+        # Show the content of the bundles folder, to make problems debugging easier
+        ls -l
+
+    - name: Upload bundles
+      if: ${{ inputs.publish }}
+      uses: actions/upload-artifact@v3
+      with:
+        name: bundles
+        path: bundles/*
+        if-no-files-found: error
+        retention-days: 1
