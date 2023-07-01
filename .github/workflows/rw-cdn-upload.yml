@@ -70,7 +70,7 @@ jobs:
             -H "Content-Type: ${CONTENT_TYPE}" \
             -H "X-Signature: ${SIGNATURE}" \
             -H "User-Agent: cdn-upload/1.0" \
-            https://cdn-preview.openttd.org/${FILENAME}
+            https://cdn.openttd.org/${FILENAME}
         done
 
     - name: Generate access token
