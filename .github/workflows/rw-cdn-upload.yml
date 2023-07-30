@@ -55,7 +55,7 @@ jobs:
 
         cd artifact
 
-        for i in $(ls); do
+        for i in $(find -type f | cut -b 3-); do
           echo "Uploading ${i} ..."
 
           FILENAME="${{ inputs.folder }}/${{ inputs.version }}/${i}"
