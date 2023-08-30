@@ -34,3 +34,4 @@ job:
 - [Python - Black](.github/workflows/rw-py-black.yml): Runs "black" over the code.
 - [Python - CodeQL](.github/workflows/rw-py-codeql.yml): Runs "CodeQL" over the code.
 - [Python - Flake8](.github/workflows/rw-py-flake8.yml): Runs "flake8" over the code.
+- [Symbols - upload](.github/workflows/rw-symbols-upload.yml): Upload the content of an artifact to the Symbol Server.

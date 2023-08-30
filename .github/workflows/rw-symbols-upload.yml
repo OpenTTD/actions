@@ -1,0 +1,65 @@
+name: Symbols Upload
+
+# Upload the content of an artifact to the symbol server.
+
+on:
+  workflow_call:
+    inputs:
+      artifact-name:
+        description: The name of the artifact to download.
+        required: true
+        type: string
+      repository:
+        description: The repository (without owner) doing the uploading.
+        required: true
+        type: string
+    secrets:
+      SYMBOLS_SIGNING_KEY:
+        description: The signing key for the Symbol server.
+        required: true
+
+jobs:
+  symbols_upload:
+    runs-on: ubuntu-latest
+    name: Symbols upload
+
+    steps:
+    - name: Download artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: ${{ inputs.artifact-name }}
+        path: artifact
+
+    - name: Install mimetype
+      shell: bash
+      run: |
+        sudo apt update
+        sudo apt install -y libfile-mimeinfo-perl --no-install-recommends
+
+    - name: Publish
+      env:
+        SYMBOLS_SIGNING_KEY: ${{ secrets.SYMBOLS_SIGNING_KEY }}
+      shell: bash
+      run: |
+        echo "${SYMBOLS_SIGNING_KEY}" > symbols_signing_key.pem
+
+        cd artifact
+
+        for i in $(find -type f | cut -b 3-); do
+          echo "Uploading ${i} ..."
+
+          FILENAME="${i}"
+          SIGNATURE=$(echo -n "${FILENAME}" | openssl dgst -sha256 -sign ../symbols_signing_key.pem | base64 -w0)
+          CONTENT_TYPE=$(mimetype -b ${i})
+
+          curl \
+            -s \
+            --fail \
+            -X PUT \
+            -T ${i} \
+            -H "Content-Type: ${CONTENT_TYPE}" \
+            -H "X-Signature: ${SIGNATURE}" \
+            -H "X-Repository: ${{ inputs.repository }}" \
+            -H "User-Agent: symbols-upload/1.0" \
+            https://symbols.openttd.org/${FILENAME}
+        done
