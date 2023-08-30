@@ -82,7 +82,7 @@ jobs:
         repository: OpenTTD/workflows
 
     - name: Trigger 'update CDN'
-      uses: peter-evans/repository-dispatch@v1
+      uses: peter-evans/repository-dispatch@v2
       with:
         token: ${{ steps.generate_token.outputs.token }}
         repository: OpenTTD/workflows
