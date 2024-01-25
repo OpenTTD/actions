@@ -35,7 +35,7 @@ jobs:
 
     steps:
     - name: Download artifact
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: ${{ inputs.artifact-name }}
         path: artifact
@@ -75,14 +75,14 @@ jobs:
 
     - name: Generate access token
       id: generate_token
-      uses: tibdex/github-app-token@v1
+      uses: tibdex/github-app-token@v2
       with:
         app_id: ${{ secrets.DEPLOYMENT_APP_ID }}
         private_key: ${{ secrets.DEPLOYMENT_APP_PRIVATE_KEY }}
         repository: OpenTTD/workflows
 
     - name: Trigger 'update CDN'
-      uses: peter-evans/repository-dispatch@v2
+      uses: peter-evans/repository-dispatch@v3
       with:
         token: ${{ steps.generate_token.outputs.token }}
         repository: OpenTTD/workflows
