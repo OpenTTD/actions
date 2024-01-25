@@ -6,5 +6,5 @@ inputs:
     description: 'GitHub Token; cannot be the GITHUB_TOKEN, as that token cannot trigger another workflow'
     default: ${{ github.token }}
 runs:
-  using: 'node16'
+  using: 'node20'
   main: 'dist/index.js'
