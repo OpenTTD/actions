@@ -30,9 +30,11 @@ jobs:
     strategy:
         fail-fast: false
         matrix:
-          platform:
-          - linux/amd64
-          - linux/arm64
+          include:
+          - platform: linux/amd64
+            name: linux-amd64
+          - platform: linux/arm64
+            name: linux-arm64
 
     runs-on: ubuntu-latest
     name: Build (${{ matrix.platform }})
@@ -106,7 +108,7 @@ jobs:
       if: ${{ inputs.publish }}
       uses: actions/upload-artifact@v4
       with:
-        name: digests
+        name: digests-${{ matrix.name }}
         path: /tmp/digests/*
         if-no-files-found: error
         retention-days: 1
@@ -129,7 +131,7 @@ jobs:
     - name: Download digests
       uses: actions/download-artifact@v4
       with:
-        name: digests
+        pattern: digests-*
         path: /tmp/digests
 
     - name: Setup Buildx
@@ -150,7 +152,7 @@ jobs:
         # Add '-t' before each tag and make it a single string.
         TAGS=$(echo "${{ needs.build.outputs.tags }}" | sed 's/^/ -t /' | tr -d '\n')
         # List all digests in the folder and prefix with the image name + "@sha256:".
-        DIGEST_FILES=$(printf '${{ needs.build.outputs.image-name }}@sha256:%s ' *)
+        DIGEST_FILES=$(printf '${{ needs.build.outputs.image-name }}@sha256:%s ' $(ls digest*/* | xargs -n 1 basename))
 
         # Create the manifest list and push it to the registry.
         docker buildx imagetools create ${TAGS} ${DIGEST_FILES}
