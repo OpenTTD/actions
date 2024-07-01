@@ -83,7 +83,7 @@ jobs:
 
     - name: Build
       id: build
-      uses: docker/build-push-action@v5
+      uses: docker/build-push-action@v6
       with:
         context: ${{ inputs.source-root }}
         platforms: ${{ matrix.platform }}
