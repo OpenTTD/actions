@@ -64,13 +64,14 @@ jobs:
 
           curl \
             -s \
-            --fail \
+            --fail-with-body \
             -X PUT \
             -T ${i} \
             -H "Content-Type: ${CONTENT_TYPE}" \
             -H "X-Signature: ${SIGNATURE}" \
             -H "User-Agent: cdn-upload/1.0" \
             https://cdn.openttd.org/${FILENAME}
+          echo
         done
 
     - name: Generate access token
