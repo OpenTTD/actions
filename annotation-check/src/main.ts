@@ -36,6 +36,17 @@ async function run(): Promise<void> {
     if (check_run.output.title) {
       core.info(`- ${check_run.output.title}: ${check_run.output.summary}`)
     }
+    if (check_run.output.annotations_count > 0) {
+      const annotations = await octokit.rest.checks.listAnnotations({
+        owner,
+        repo,
+        check_run_id: check_run.id
+      })
+
+      for (const annotation of annotations.data) {
+        core.info(`${annotation.path}:${annotation.start_line} - ${annotation.message}`)
+      }
+    }
     count += check_run.output.annotations_count
   }
 
