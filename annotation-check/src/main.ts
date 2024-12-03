@@ -45,9 +45,13 @@ async function run(): Promise<void> {
 
       for (const annotation of annotations.data) {
         core.info(`${annotation.path}:${annotation.start_line} - ${annotation.message}`)
+        if (annotation.annotation_level === 'warning' && annotation.path === '.github') {
+          // Ignore warning annotations to do with the CI. Likely *-latest upgrade notices
+        } else {
+          count += 1
+        }
       }
     }
-    count += check_run.output.annotations_count
   }
 
   if (count === 0) {
