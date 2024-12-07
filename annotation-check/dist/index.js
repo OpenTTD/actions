@@ -29190,25 +29190,26 @@ function run() {
         core.info('Overview of jobs:');
         let count = 0;
         for (const check_run of list_runs.data.check_runs) {
-            if (check_run.output.title) {
-                core.info(`- ${check_run.output.title}: ${check_run.output.summary}`);
-            }
-            if (check_run.output.annotations_count > 0) {
-                const annotations = yield octokit.rest.checks.listAnnotations({
-                    owner,
-                    repo,
-                    check_run_id: check_run.id
-                });
-                for (const annotation of annotations.data) {
-                    core.info(`${annotation.path}:${annotation.start_line} - ${annotation.message}`);
-                    if (annotation.annotation_level === 'warning' && annotation.path === '.github') {
-                        // Ignore warning annotations to do with the CI. Likely *-latest upgrade notices
-                    }
-                    else {
-                        count += 1;
-                    }
+            if (check_run.output.annotations_count === 0)
+                continue;
+            core.startGroup(`${check_run.name}`);
+            const annotations = yield octokit.rest.checks.listAnnotations({
+                owner,
+                repo,
+                check_run_id: check_run.id
+            });
+            for (const annotation of annotations.data) {
+                let message = `${annotation.path}:${annotation.start_line} - ${annotation.message}`;
+                if (annotation.annotation_level === 'warning' && annotation.path === '.github') {
+                    // Ignore warning annotations to do with the CI. Likely *-latest upgrade notices
+                    message += ' (ignored)';
                 }
+                else {
+                    count += 1;
+                }
+                core.info(message);
             }
+            core.endGroup();
         }
         if (count === 0) {
             core.info('No annotations found');

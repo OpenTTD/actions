@@ -33,25 +33,25 @@ async function run(): Promise<void> {
 
   let count = 0
   for (const check_run of list_runs.data.check_runs) {
-    if (check_run.output.title) {
-      core.info(`- ${check_run.output.title}: ${check_run.output.summary}`)
-    }
-    if (check_run.output.annotations_count > 0) {
-      const annotations = await octokit.rest.checks.listAnnotations({
-        owner,
-        repo,
-        check_run_id: check_run.id
-      })
+    if (check_run.output.annotations_count === 0) continue
+    core.startGroup(`${check_run.name}`)
+    const annotations = await octokit.rest.checks.listAnnotations({
+      owner,
+      repo,
+      check_run_id: check_run.id
+    })
 
-      for (const annotation of annotations.data) {
-        core.info(`${annotation.path}:${annotation.start_line} - ${annotation.message}`)
-        if (annotation.annotation_level === 'warning' && annotation.path === '.github') {
-          // Ignore warning annotations to do with the CI. Likely *-latest upgrade notices
-        } else {
-          count += 1
-        }
+    for (const annotation of annotations.data) {
+      let message = `${annotation.path}:${annotation.start_line} - ${annotation.message}`
+      if (annotation.annotation_level === 'warning' && annotation.path === '.github') {
+        // Ignore warning annotations to do with the CI. Likely *-latest upgrade notices
+        message += ' (ignored)'
+      } else {
+        count += 1
       }
+      core.info(message)
     }
+    core.endGroup()
   }
 
   if (count === 0) {
