@@ -59,4 +59,10 @@ jobs:
     - black
     # not codeql, as that reports its own status
 
-    uses: ./.github/workflows/rw-annotation-check.yml
+    if: always() && github.event_name == 'pull_request'
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check annotations
+        uses: OpenTTD/actions/annotation-check@v5
