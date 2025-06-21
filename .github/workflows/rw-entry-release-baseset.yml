@@ -9,6 +9,11 @@ on:
         description: A list of apt packages to install.
         required: false
         type: string
+      lfs:
+        description: Whether to use Git LFS.
+        default: false
+        required: false
+        type: boolean
       name:
         description: The name of the project.
         required: true
@@ -20,6 +25,11 @@ on:
       problem-matcher:
         description: A problem matcher to use.
         default: ""
+        required: false
+        type: string
+      python-version:
+        description: Python version
+        default: "3.8"
         required: false
         type: string
     secrets:
@@ -53,10 +63,12 @@ jobs:
     uses: ./.github/workflows/rw-baseset-build.yml
     with:
       apt-packages: ${{ inputs.apt-packages }}
+      lfs: ${{ inputs.lfs }}
       name: ${{ inputs.name }}
       pip-packages: ${{ inputs.pip-packages }}
       problem-matcher: ${{ inputs.problem-matcher }}
       publish: true
+      python-version: ${{ inputs.python-version }}
       release-date: ${{ needs.metadata.outputs.release-date }}
       version: ${{ needs.metadata.outputs.version }}
 
