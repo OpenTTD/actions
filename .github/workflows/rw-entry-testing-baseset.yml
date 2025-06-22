@@ -9,6 +9,11 @@ on:
         description: A list of apt packages to install.
         required: false
         type: string
+      lfs:
+        description: Whether to use Git LFS.
+        default: false
+        required: false
+        type: boolean
       name:
         description: The name of the project.
         required: true
@@ -22,6 +27,11 @@ on:
         default: ""
         required: false
         type: string
+      python-version:
+        description: Python version
+        default: "3.8"
+        required: false
+        type: string
 
 concurrency:
   group: testing-${{ github.ref }}
@@ -33,10 +43,12 @@ jobs:
     uses: ./.github/workflows/rw-baseset-build.yml
     with:
       apt-packages: ${{ inputs.apt-packages }}
+      lfs: ${{ inputs.lfs }}
       name: ${{ inputs.name }}
       pip-packages: ${{ inputs.pip-packages }}
       problem-matcher: ${{ inputs.problem-matcher }}
       publish: false
+      python-version: ${{ inputs.python-version }}
       release-date: ""
       version: dev
 

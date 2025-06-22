@@ -10,6 +10,11 @@ on:
         default: ""
         required: false
         type: string
+      lfs:
+        description: Whether to use Git LFS.
+        default: false
+        required: false
+        type: boolean
       name:
         description: The name of the project.
         required: true
@@ -29,6 +34,10 @@ on:
         default: false
         required: false
         type: boolean
+      python-version:
+        description: Python version
+        required: true
+        type: string
       release-date:
         description: The release date of the project.
         required: true
@@ -46,6 +55,8 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v4
+      with:
+        lfs: ${{ inputs.lfs }}
 
     - name: Install apt dependencies
       if: ${{ inputs.apt-packages != '' }}
@@ -54,11 +65,11 @@ jobs:
         sudo apt update
         sudo apt install -y ${{ inputs.apt-packages }} --no-install-recommends
 
-    - name: Set up Python 3.8
+    - name: Set up Python
       if: ${{ inputs.pip-packages != '' }}
       uses: actions/setup-python@v5
       with:
-        python-version: 3.8
+        python-version: ${{ inputs.python-version}}
 
     - name: Install pip dependencies
       if: ${{ inputs.pip-packages != '' }}
@@ -108,7 +119,11 @@ jobs:
 
         echo "${{ inputs.release-date }}" > released.txt
         cp ../README.md .
-        cp ../changelog.txt .
+        if [ -e ../changelog.txt ]; then
+          cp ../changelog.txt .
+        else
+          cp ../CHANGELOG.md .
+        fi
 
         # Show the content of the bundles folder, to make problems debugging easier
         ls -l
