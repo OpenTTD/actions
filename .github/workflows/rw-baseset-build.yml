@@ -77,7 +77,7 @@ jobs:
       shell: bash
       run: |
         make maintainer-clean
-        make bundle_zip bundle_xsrc
+        make bundle_zip
 
     - name: Move bundles
       if: ${{ inputs.publish }}
@@ -85,7 +85,6 @@ jobs:
       run: |
         mkdir bundles
 
-        mv ${{ inputs.name }}-${{ inputs.version }}-source.tar.xz bundles/
         mv ${{ inputs.name }}-${{ inputs.version }}-all.zip bundles/
 
     - name: Create checksums
