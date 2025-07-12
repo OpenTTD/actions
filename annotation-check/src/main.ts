@@ -43,8 +43,11 @@ async function run(): Promise<void> {
 
     for (const annotation of annotations.data) {
       let message = `${annotation.path}:${annotation.start_line} - ${annotation.message}`
-      if (annotation.annotation_level === 'warning' && annotation.path === '.github') {
-        // Ignore warning annotations to do with the CI. Likely *-latest upgrade notices
+      if (
+        annotation.path === '.github' &&
+        (annotation.annotation_level === 'warning' || annotation.annotation_level === 'notice')
+      ) {
+        // Ignore warning/notice annotations to do with the CI. Likely *-latest upgrade notices
         message += ' (ignored)'
       } else {
         count += 1
