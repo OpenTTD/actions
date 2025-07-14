@@ -38,13 +38,12 @@ jobs:
         cd annotation-check
         npm run build
 
-        if git diff-index --quiet HEAD; then
+        if ! git diff --quiet; then
           echo "::error::Build folder is not up-to-date"
           echo "Did you forget to run 'npm run build' before committing?"
           echo "The diff looks like this:"
           echo ""
           git status
           echo ""
-          git diff
-          exit 1
+          git diff --exit-code
         fi
