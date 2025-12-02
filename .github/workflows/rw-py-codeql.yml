@@ -21,10 +21,10 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
 
     - name: Set up Python
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: ${{ inputs.python-version }}
 
@@ -32,11 +32,11 @@ jobs:
       run: python -m pip install -r ${{ inputs.source-root }}/requirements.txt
 
     - name: Initialize CodeQL
-      uses: github/codeql-action/init@v3
+      uses: github/codeql-action/init@v4
       with:
         languages: python
         queries: security-and-quality
         source-root: ${{ inputs.source-root }}
 
     - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v3
+      uses: github/codeql-action/analyze@v4
