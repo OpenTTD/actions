@@ -6,6 +6,7 @@ This repository contains several GitHub Actions and Workflows that help with the
 
 - [annotation-check](annotation-check/): Check if any previous job in a workflow has any annotation.
 - [checkout-pull-request](checkout-pull-request/): Checkout all commits of a Pull Request.
+- [setup_vcpkg](setup-vcpkg/): Install vcpkg and configure its cache.
 
 ## Reusing Workflows
 
