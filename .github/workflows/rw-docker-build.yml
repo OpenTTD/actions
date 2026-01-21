@@ -43,7 +43,7 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
       with:
         fetch-depth: 0
         ref: ${{ inputs.ref }}
@@ -105,7 +105,7 @@ jobs:
 
     - name: Upload digest
       if: ${{ inputs.publish }}
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v6
       with:
         name: digests-${{ matrix.name }}
         path: /tmp/digests/*
@@ -128,7 +128,7 @@ jobs:
 
     steps:
     - name: Download digests
-      uses: actions/download-artifact@v6
+      uses: actions/download-artifact@v7
       with:
         pattern: digests-*
         path: /tmp/digests

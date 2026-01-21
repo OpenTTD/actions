@@ -17,7 +17,7 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
 
     - name: Flake8
       uses: TrueBrain/actions-flake8@v2
