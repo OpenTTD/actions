@@ -7,4 +7,4 @@ inputs:
     default: ${{ github.token }}
 runs:
   using: 'node24'
-  main: 'dist/index.js'
+  main: 'dist/main.js'
