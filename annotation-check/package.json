@@ -2,11 +2,11 @@
   "name": "@openttd-actions/annotation-check",
   "main": "src/main.js",
   "scripts": {
-    "build": "ncc build src/main.ts",
+    "build": "esbuild --bundle --outdir=dist --platform=node src/main.ts",
     "clean": "rm -rf node_modules package-lock.json dist",
-    "dev": "ncc build --watch src/main.ts",
+    "dev": "esbuild --bundle --outdir=dist --platform=node --watch src/main.ts",
     "format": "prettier --write src/*.ts",
-    "test:build": "ncc build -C -q src/main.ts",
+    "test:build": "esbuild --bundle --platform=node src/main.ts | dev-null",
     "test:format": "prettier --check src/*.ts",
     "test:lint": "eslint -- src/*.ts",
     "test": "npm run test:format && npm run test:lint && npm run test:build"
@@ -18,7 +18,8 @@
   "devDependencies": {
     "@stylistic/eslint-plugin": "^5.7.0",
     "@typescript-eslint/parser": "^8.53.1",
-    "@vercel/ncc": "^0.38.4",
+    "dev-null-cli": "^2.0.0",
+    "esbuild": "^0.28.2",
     "eslint": "^9.39.2",
     "eslint-plugin-github": "^6.0.0",
     "eslint-plugin-prettier": "^5.5.5",
