@@ -12,18 +12,18 @@
     "test": "npm run test:format && npm run test:lint && npm run test:build"
   },
   "dependencies": {
-    "@actions/core": "^2.0.2",
+    "@actions/core": "^2.0.3",
     "@actions/github": "^9.1.1"
   },
   "devDependencies": {
-    "@stylistic/eslint-plugin": "^5.7.0",
+    "@stylistic/eslint-plugin": "^5.10.0",
     "@typescript-eslint/parser": "^8.53.1",
     "dev-null-cli": "^2.0.0",
     "esbuild": "^0.28.2",
-    "eslint": "^9.39.2",
-    "eslint-plugin-github": "^6.0.0",
-    "eslint-plugin-prettier": "^5.5.5",
-    "prettier": "^3.8.1",
+    "eslint": "^9.39.5",
+    "eslint-plugin-github": "^6.1.2",
+    "eslint-plugin-prettier": "^5.5.6",
+    "prettier": "^3.9.6",
     "typescript": "^5.9.3"
   }
 }
