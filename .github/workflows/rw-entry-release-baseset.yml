@@ -36,8 +36,8 @@ on:
       CDN_SIGNING_KEY:
         description: The signing key for the CDN.
         required: true
-      DEPLOYMENT_APP_ID:
-        description: The ID of the GitHub App used to trigger deployments.
+      DEPLOYMENT_APP_CLIENT_ID:
+        description: The client ID of the GitHub App used to trigger deployments.
         required: true
       DEPLOYMENT_APP_PRIVATE_KEY:
         description: The private key of the GitHub App used to trigger deployments.
@@ -82,7 +82,7 @@ jobs:
     uses: ./.github/workflows/rw-cdn-upload.yml
     secrets:
       CDN_SIGNING_KEY: ${{ secrets.CDN_SIGNING_KEY }}
-      DEPLOYMENT_APP_ID: ${{ secrets.DEPLOYMENT_APP_ID }}
+      DEPLOYMENT_APP_CLIENT_ID: ${{ secrets.DEPLOYMENT_APP_CLIENT_ID }}
       DEPLOYMENT_APP_PRIVATE_KEY: ${{ secrets.DEPLOYMENT_APP_PRIVATE_KEY }}
     with:
       artifact-name: bundles
