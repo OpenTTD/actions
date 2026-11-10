@@ -15,4 +15,4 @@ jobs:
     with:
       source-root: test-docker-py
       python-path: test
-      python-version: 3.8
+      python-version: 3.11

@@ -29,7 +29,7 @@ on:
         type: string
       python-version:
         description: Python version
-        default: "3.8"
+        default: "3.11"
         required: false
         type: string
     secrets:
