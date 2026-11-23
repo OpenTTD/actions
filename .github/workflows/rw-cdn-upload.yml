@@ -21,8 +21,8 @@ on:
       CDN_SIGNING_KEY:
         description: The signing key for the CDN.
         required: true
-      DEPLOYMENT_APP_ID:
-        description: The ID of the GitHub App used to trigger deployments.
+      DEPLOYMENT_APP_CLIENT_ID:
+        description: The client ID of the GitHub App used to trigger deployments.
         required: true
       DEPLOYMENT_APP_PRIVATE_KEY:
         description: The private key of the GitHub App used to trigger deployments.
@@ -76,12 +76,12 @@ jobs:
 
     - name: Generate access token
       id: generate_token
-      uses: tibdex/github-app-token@v2
+      uses: actions/create-github-app-token@v3
       with:
-        app_id: ${{ secrets.DEPLOYMENT_APP_ID }}
-        private_key: ${{ secrets.DEPLOYMENT_APP_PRIVATE_KEY }}
-        installation_retrieval_mode: "repository"
-        installation_retrieval_payload : "OpenTTD/workflows"
+        client-id: ${{ secrets.DEPLOYMENT_APP_CLIENT_ID }}
+        private-key: ${{ secrets.DEPLOYMENT_APP_PRIVATE_KEY }}
+        repositories: |
+          OpenTTD/workflows
 
     - name: Trigger 'update CDN'
       uses: peter-evans/repository-dispatch@v4
